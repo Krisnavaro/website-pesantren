@@ -1138,7 +1138,7 @@ const ctaScene = {
   <Container>
     <SectionHeader
       badge="Profil Pesantren"
-      title="Pendahuluan, Visi & Misi"
+      title="Pendahuluan, Landasan, Visi & Misi"
       desc="Mengenal Pondok Pesantren Al Qur'an Al Furqon lebih dekat."
     />
 
@@ -1150,6 +1150,16 @@ const ctaScene = {
 
       <p className="leading-relaxed text-slate-700">
         {homeData.profil?.pendahuluan}
+      </p>
+    </div>
+
+    <div className="mt-6 rounded-[2rem] bg-white p-8 shadow-xl">
+      <h3 className="text-3xl font-black text-emerald-950 mb-4">
+        Landasan
+      </h3>
+
+      <p className="leading-relaxed text-slate-700 whitespace-pre-line">
+        {homeData.profil?.landasan}
       </p>
     </div>
 

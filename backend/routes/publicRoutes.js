@@ -16,6 +16,20 @@ const homeData = {
     image: "/hero-santri.jpg",
   },
 
+  profil: {
+    pendahuluan:
+      "Pondok Pesantren Al Qur'an Al Furqon berdiri pada tahun 1976 yang berlokasi di Cilendek Barat Kota Bogor oleh Abah KH. Abdurrochman...",
+
+    visi:
+      "Membentuk Generasi Qur'ani yang berdaya Fikir dan Dzikir.",
+
+    misi: [
+      "Memahami dan mendalami Qo'idah-Qo'idah bacaan Al Qur'an.",
+      "Mengkaji, memahami dan mengamalkan isi kandungan Al Qur'an.",
+      "Menjadikan Al Qur'an sebagai pedoman hidup sepanjang hayat."
+    ]
+  },
+
   heroStats: [
     { value: "100+", label: "Santri" },
     { value: "3", label: "Program" },
