@@ -563,6 +563,7 @@ function MagneticButton({ children, href, variant = "primary" }) {
 function SectionNavigator() {
   const sections = [
     { id: "hero", label: "Awal" },
+    { id: "profil", label: "Profil" },
     { id: "values", label: "Nilai" },
     { id: "story", label: "Cerita" },
     { id: "program", label: "Program" },
@@ -1127,10 +1128,62 @@ const ctaScene = {
         </Container>
       </Section>
 
+      {/* PROFIL PESANTREN */}
+<Section
+  id="profil"
+  scene={1}
+  label="Profil"
+  className="bg-[#f7f1df]"
+>
+  <Container>
+    <SectionHeader
+      badge="Profil Pesantren"
+      title="Pendahuluan, Visi & Misi"
+      desc="Mengenal Pondok Pesantren Al Qur'an Al Furqon lebih dekat."
+    />
+
+    {/* Pendahuluan */}
+    <div className="mt-10 rounded-[2rem] bg-white p-8 shadow-xl">
+      <h3 className="text-3xl font-black text-emerald-950 mb-4">
+        Pendahuluan
+      </h3>
+
+      <p className="leading-relaxed text-slate-700">
+        Pondok Pesantren Al Qur'an Al Furqon berdiri pada tahun 1976 yang
+        berlokasi di Cilendek Barat Kota Bogor oleh Abah KH. Abdurrochman...
+      </p>
+    </div>
+
+    <div className="mt-6 grid gap-6 lg:grid-cols-2">
+      <div className="rounded-[2rem] bg-white p-8 shadow-xl">
+        <h3 className="text-3xl font-black text-emerald-950 mb-4">
+          Visi
+        </h3>
+
+        <p className="text-slate-700">
+          Membentuk Generasi Qur'ani yang berdaya Fikir dan Dzikir.
+        </p>
+      </div>
+
+      <div className="rounded-[2rem] bg-white p-8 shadow-xl">
+        <h3 className="text-3xl font-black text-emerald-950 mb-4">
+          Misi
+        </h3>
+
+        <ul className="space-y-3 text-slate-700">
+          <li>1. Memahami dan mendalami Qo'idah-Qo'idah bacaan Al Qur'an.</li>
+          <li>2. Mengkaji, memahami dan mengamalkan isi kandungan Al Qur'an.</li>
+          <li>3. Menjadikan Al Qur'an sebagai pedoman hidup sepanjang hayat.</li>
+        </ul>
+      </div>
+    </div>
+  </Container>
+</Section>
+
       {/* VALUES */}
 <Section
   id="values"
-  scene={1}
+  scene={2}
   label="Nilai"
   className="bg-gradient-to-br from-[#f7f1df] via-white to-emerald-50"
 >
@@ -1174,7 +1227,7 @@ const ctaScene = {
       </Section>
 
       {/* STORY */}
-      <Section id="story" dark scene={2} label="Cerita">
+      <Section id="story" dark scene={3} label="Cerita">
         <IslamicBackground dark intense />
 
         <Container className="flex min-h-[100svh] items-center">
@@ -1286,7 +1339,7 @@ const ctaScene = {
       </Section>
 
       {/* PROGRAM */}
-      <Section id="program" scene={3} label="Program" className="bg-[#f7f1df]">
+      <Section id="program" scene={4} label="Program" className="bg-[#f7f1df]">
         <IslamicBackground />
 
 <Container
@@ -1351,7 +1404,7 @@ const ctaScene = {
       </Section>
 
       {/* PEMBINA */}
-<Section id="pembina" dark scene={4} label="Pembina">
+<Section id="pembina" dark scene={5} label="Pembina">
   <IslamicBackground dark intense />
 
 <ResponsiveMotionContainer
@@ -1542,7 +1595,7 @@ className={`w-[190px] min-w-[190px] rounded-2xl border p-3 text-left transition 
 </Section>
 
       {/* CTA */}
-      <Section id="cta" scene={5} label="Daftar" className="bg-[#f7f1df]">
+      <Section id="cta" scene={6} label="Daftar" className="bg-[#f7f1df]">
         <IslamicBackground />
 
         <Container
