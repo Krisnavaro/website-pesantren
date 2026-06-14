@@ -1149,8 +1149,7 @@ const ctaScene = {
       </h3>
 
       <p className="leading-relaxed text-slate-700">
-        Pondok Pesantren Al Qur'an Al Furqon berdiri pada tahun 1976 yang
-        berlokasi di Cilendek Barat Kota Bogor oleh Abah KH. Abdurrochman...
+        {homeData.profil?.pendahuluan}
       </p>
     </div>
 
@@ -1161,7 +1160,7 @@ const ctaScene = {
         </h3>
 
         <p className="text-slate-700">
-          Membentuk Generasi Qur'ani yang berdaya Fikir dan Dzikir.
+          {homeData.profil?.visi}
         </p>
       </div>
 
@@ -1171,9 +1170,11 @@ const ctaScene = {
         </h3>
 
         <ul className="space-y-3 text-slate-700">
-          <li>1. Memahami dan mendalami Qo'idah-Qo'idah bacaan Al Qur'an.</li>
-          <li>2. Mengkaji, memahami dan mengamalkan isi kandungan Al Qur'an.</li>
-          <li>3. Menjadikan Al Qur'an sebagai pedoman hidup sepanjang hayat.</li>
+          {homeData.profil?.misi?.map((item, index) => (
+            <li key={index}>
+              {index + 1}. {item}
+            </li>
+          ))}
         </ul>
       </div>
     </div>
