@@ -477,14 +477,14 @@ export default function Program() {
 
   const sceneLinks = useMemo(
     () => [
-      { number: "01", label: "Intro", href: "#hero" },
-      { number: "02", label: "Stats", href: "#stats" },
-      { number: "03", label: "Program", href: "#program-showcase" },
-      { number: "04", label: "Detail", href: "#detail-program" },
-      { number: "05", label: "Timeline", href: "#timeline-program" },
-      { number: "06", label: "Galeri", href: "#galeri" },
-      { number: "07", label: "FAQ", href: "#faq" },
-      { number: "08", label: "Ending", href: "#closing-scene" },
+      { id: "hero", label: "Awal" },
+      { id: "stats", label: "Statistik" },
+      { id: "program-showcase", label: "Program" },
+      { id: "detail-program", label: "Detail" },
+      { id: "timeline-program", label: "Timeline" },
+      { id: "galeri", label: "Galeri" },
+      { id: "faq", label: "FAQ" },
+      { id: "closing-scene", label: "Daftar" },
     ],
     []
   );
@@ -563,35 +563,26 @@ export default function Program() {
   const active = programs[activeProgram] || programs[0];
 
   return (
-    <main className="overflow-x-hidden bg-[#f6f1e4] text-slate-900">
-      <ScrollProgress />
-      <Navbar />
+  <main className="overflow-x-hidden bg-[#f6f1e4] text-slate-900">
+    <ScrollProgress />
+    <Navbar />
 
-      {/* MINI STORYBOARD NAV */}
-      <div className="pointer-events-none fixed right-4 top-1/2 z-40 hidden -translate-y-1/2 xl:block">
-        <div className="pointer-events-auto rounded-[1.8rem] border-[3px] border-white/10 bg-[#071a15]/80 p-3 shadow-2xl backdrop-blur-xl">
-          <p className="mb-3 text-center text-[10px] font-black uppercase tracking-[0.3em] text-yellow-300">
-            Timeline
-          </p>
+    {/* NAVIGATOR */}
+    <div className="fixed right-5 top-1/2 z-[70] hidden -translate-y-1/2 xl:flex flex-col gap-3">
+      {sceneLinks.map((item) => (
+        <a
+          key={item.id}
+          href={`#${item.id}`}
+          className="group flex items-center justify-end gap-3"
+        >
+          <span className="rounded-full bg-emerald-950/80 px-3 py-1 text-[11px] font-black text-yellow-300 opacity-0 shadow-lg backdrop-blur-xl transition group-hover:opacity-100">
+            {item.label}
+          </span>
 
-          <div className="space-y-2">
-            {sceneLinks.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-3 py-2 transition hover:bg-white/10"
-              >
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-yellow-400 text-[10px] font-black text-emerald-950">
-                  {item.number}
-                </div>
-                <span className="text-xs font-bold text-white">
-                  {item.label}
-                </span>
-              </a>
-            ))}
-          </div>
-        </div>
-      </div>
+          <span className="h-3 w-3 rounded-full border border-black/60 bg-yellow-300/40 shadow-[0_0_20px_rgba(250,204,21,0.5)] transition group-hover:scale-150 group-hover:bg-yellow-300" />
+        </a>
+      ))}
+    </div>
 
       {/* ======================================================
          HERO
@@ -768,7 +759,7 @@ export default function Program() {
               />
 
               {/* MOBILE GRID SELECTOR */}
-              <div className="mt-5 grid grid-cols-2 gap-3 lg:hidden">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
                 {programs.map((item, index) => (
                   <button
                     key={item.title}
@@ -800,7 +791,7 @@ export default function Program() {
               </div>
 
               {/* DESKTOP SELECTOR */}
-              <div className="mt-6 hidden gap-3 lg:grid">
+              <div className="hidden">
                 {programs.map((item, index) => (
                   <button
                     key={item.title}

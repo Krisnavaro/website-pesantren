@@ -427,29 +427,27 @@ function MagneticButton({ children, onClick, href, variant = "primary" }) {
 }
 
 function FloatingNavigator() {
-  const items = [
-    { label: "Hero", href: "#hero" },
-    { label: "Unggulan", href: "#featured" },
-    { label: "Jelajah", href: "#explorer" },
-    { label: "Cinematic", href: "#cinematic" },
-    { label: "Daftar", href: "#cta" },
+  const sections = [
+    { id: "hero", label: "Hero" },
+    { id: "featured", label: "Unggulan" },
+    { id: "explorer", label: "Jelajah" },
+    { id: "cinematic", label: "Cinematic" },
+    { id: "cta", label: "Kontak" },
   ];
 
   return (
-    <div className="fixed right-5 top-1/2 z-[80] hidden -translate-y-1/2 flex-col gap-3 xl:flex">
-      {items.map((item, index) => (
+    <div className="fixed right-5 top-1/2 z-[70] hidden -translate-y-1/2 flex-col gap-3 xl:flex">
+      {sections.map((item) => (
         <a
-          key={item.href}
-          href={item.href}
+          key={item.id}
+          href={`#${item.id}`}
           className="group flex items-center justify-end gap-3"
         >
-          <span className="rounded-full bg-emerald-950/85 px-3 py-1 text-[11px] font-black text-yellow-300 opacity-0 shadow-lg backdrop-blur-xl transition group-hover:opacity-100">
+          <span className="rounded-full bg-emerald-950/80 px-3 py-1 text-[11px] font-black text-yellow-300 opacity-0 shadow-lg backdrop-blur-xl transition group-hover:opacity-100">
             {item.label}
           </span>
 
-          <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-emerald-950/85 text-[10px] font-black text-yellow-300 shadow-[0_0_25px_rgba(250,204,21,0.28)] transition group-hover:scale-110 group-hover:bg-yellow-400 group-hover:text-emerald-950">
-            {String(index + 1).padStart(2, "0")}
-          </span>
+          <span className="h-3 w-3 rounded-full border border-black/60 bg-yellow-300/40 shadow-[0_0_20px_rgba(250,204,21,0.5)] transition group-hover:scale-150 group-hover:bg-yellow-300" />
         </a>
       ))}
     </div>
