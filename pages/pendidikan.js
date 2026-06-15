@@ -949,9 +949,9 @@ export default function Pendidikan() {
         >
           <div
             ref={journeyRef}
-            className="grid w-full max-w-full items-center gap-8 lg:grid-cols-[0.82fr_1.18fr]"
+            className="grid w-full max-w-full overflow-hidden items-center gap-8 lg:grid-cols-[0.82fr_1.18fr]"
           >
-            <div>
+            <div className="min-w-0 overflow-hidden">
               <SectionHeader
                 light
                 align="left"
@@ -965,7 +965,7 @@ export default function Pendidikan() {
                   <button
                     key={item.level}
                     onClick={() => setActive(index)}
-                    className={`min-w-[124px] rounded-2xl border p-3 text-center transition ${
+                    className={`min-w-[110px] flex-shrink-0 rounded-2xl border p-3 text-center transition ${
                       active === index
                         ? "border-yellow-300 bg-yellow-400 text-emerald-950 shadow-xl"
                         : "border-white/10 bg-white/10 text-white"
