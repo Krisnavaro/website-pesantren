@@ -565,7 +565,6 @@ function SectionNavigator() {
     { id: "hero", label: "Awal" },
     { id: "profil", label: "Profil" },
     { id: "values", label: "Nilai" },
-    { id: "story", label: "Cerita" },
     { id: "program", label: "Program" },
     { id: "pembina", label: "Pembina" },
     { id: "cta", label: "Daftar" },
@@ -831,7 +830,6 @@ export default function Home() {
   const [maintenance, setMaintenance] = useState(false);
   const [checking, setChecking] = useState(false);
 
-  const [activeStory, setActiveStory] = useState(0);
   const [activePembina, setActivePembina] = useState(0);
 
 const { scrollY } = useScroll();
@@ -844,11 +842,6 @@ const valuesScene = {
   y: useTransform(scrollY, [500, 1200, 1900], [160, 0, -120]),
   scale: useTransform(scrollY, [500, 1200, 1900], [0.94, 1, 1.04]),
   opacity: useTransform(scrollY, [500, 850, 1850], [0.35, 1, 0.8]),
-};
-
-const storyScene = {
-  y: useTransform(scrollY, [1400, 2300, 3200], [180, 0, -160]),
-  scale: useTransform(scrollY, [1400, 2300, 3200], [0.92, 1, 1.04]),
 };
 
 const programScene = {
@@ -914,16 +907,6 @@ const ctaScene = {
   }, []);
 
   useEffect(() => {
-    if (!homeData?.storyChapters?.length) return;
-
-    const timer = setInterval(() => {
-      setActiveStory((prev) => (prev + 1) % homeData.storyChapters.length);
-    }, 4200);
-
-    return () => clearInterval(timer);
-  }, [homeData]);
-
-  useEffect(() => {
     if (!homeData?.pembina?.length) return;
 
     const timer = setInterval(() => {
@@ -942,8 +925,6 @@ const ctaScene = {
   }
 
   const hero = homeData.hero;
-  const currentStory =
-    homeData.storyChapters[activeStory] || homeData.storyChapters[0];
   const currentPembina = homeData.pembina[activePembina] || homeData.pembina[0];
 
   return (
@@ -1237,118 +1218,6 @@ const ctaScene = {
         </Container>
       </Section>
 
-      {/* STORY */}
-      <Section id="story" dark scene={3} label="Cerita">
-        <IslamicBackground dark intense />
-
-        <Container className="flex min-h-[100svh] items-center">
-          <div className="grid w-full items-center gap-8 lg:grid-cols-[0.92fr_1.08fr]">
-            <ParallaxBlock
-  range={[1500, 3200]}
-  y={[160, -140]}
-  scale={[0.92, 1.05]}
-  rotate={[-3, 2]}
-  className="hidden lg:block"
->
-  <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/10 p-3 shadow-2xl backdrop-blur-xl">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeStory}
-                    initial={{ opacity: 0, scale: 1.05, rotate: 2 }}
-                    animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                    exit={{ opacity: 0, scale: 0.96, rotate: -2 }}
-                    transition={{ duration: 0.5 }}
-                    className="relative overflow-hidden rounded-[1.6rem]"
-                  >
-                    <SafeImage
-                      src={currentStory.image}
-                      alt={currentStory.label}
-                      className="h-[62svh] w-full object-cover"
-                    />
-
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent"
-                    />
-
-                    <div className="absolute bottom-0 left-0 p-6">
-                      <p className="text-sm font-black tracking-[0.35em] text-yellow-300">
-                        BAB {currentStory.number}
-                      </p>
-
-                      <h3 className="mt-2 text-5xl font-black text-white">
-                        {currentStory.label}
-                      </h3>
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-            </ParallaxBlock>
-
-            <Reveal type="right">
-              <Badge light>Bab Cerita</Badge>
-
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeStory}
-                  initial={{ opacity: 0, y: 35, filter: "blur(10px)" }}
-                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                  exit={{ opacity: 0, y: -35, filter: "blur(10px)" }}
-                  transition={{ duration: 0.45 }}
-                >
-                  <p className="mt-6 text-xs font-black uppercase tracking-[0.35em] text-yellow-300">
-                    BAB {currentStory.number} / 04
-                  </p>
-
-                  <h2 className="mt-4 text-[clamp(2.1rem,6vw,5rem)] font-black leading-[0.95] tracking-[-0.06em] text-white">
-                    {currentStory.title}
-                  </h2>
-
-                  <p className="mt-6 max-w-2xl text-sm leading-relaxed text-emerald-100 sm:text-base lg:text-lg">
-                    {currentStory.desc}
-                  </p>
-                </motion.div>
-              </AnimatePresence>
-
-              <div className="mt-7 grid grid-cols-4 gap-2">
-                {homeData.storyChapters.map((item, index) => (
-                  <motion.button
-                    key={item.number}
-                    onClick={() => setActiveStory(index)}
-                    whileTap={{ scale: 0.96 }}
-                    className={`relative overflow-hidden rounded-2xl border p-3 text-left transition ${
-                      activeStory === index
-                        ? "border-yellow-300 bg-yellow-300 text-emerald-950"
-                        : "border-white/10 bg-white/10 text-white hover:bg-white/20"
-                    }`}
-                  >
-                    {activeStory === index && (
-                      <motion.div
-                        layoutId="story-active"
-                        className="absolute inset-0 bg-yellow-300"
-                        transition={{
-                          type: "spring",
-                          stiffness: 260,
-                          damping: 28,
-                        }}
-                      />
-                    )}
-
-                    <span className="relative z-10 block">
-                      <p className="text-xs font-black">{item.number}</p>
-                      <p className="mt-2 hidden text-sm font-black sm:block">
-                        {item.label}
-                      </p>
-                    </span>
-                  </motion.button>
-                ))}
-              </div>
-            </Reveal>
-          </div>
-        </Container>
-      </Section>
-
       {/* PROGRAM */}
       <Section id="program" scene={4} label="Program" className="bg-[#f7f1df]">
         <IslamicBackground />
@@ -1369,29 +1238,23 @@ const ctaScene = {
               <Reveal key={item.title} delay={index * 0.08}>
                 <TiltCard>
                   <div className="group overflow-hidden rounded-[2rem] border border-emerald-100 bg-white shadow-2xl">
-                    <div className="relative h-[280px] overflow-hidden">
-                      <SafeImage
-                        src={item.image}
-                        alt={item.title}
-                        className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
-                      />
-
-                      <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/90 via-transparent to-transparent" />
-
+                    <div className="relative flex h-[280px] items-center justify-center bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-950">
                       <motion.div
-                        animate={{ y: [0, -8, 0] }}
+                        animate={{
+                          y: [0, -10, 0],
+                          rotate: [0, 5, 0],
+                        }}
                         transition={{
-                          duration: 5,
+                          duration: 4,
                           repeat: Infinity,
                           ease: "easeInOut",
-                          delay: index * 0.4,
                         }}
-                        className="absolute bottom-5 left-5 right-5"
+                        className="text-[90px] text-yellow-400"
                       >
-                        <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400 text-2xl text-emerald-950">
-                          {getIcon(item.iconKey)}
-                        </div>
+                        {getIcon(item.iconKey)}
+                      </motion.div>
 
+                      <div className="absolute bottom-5 left-5 right-5">
                         <p className="text-xs font-black uppercase tracking-[0.28em] text-yellow-300">
                           {item.tag}
                         </p>
@@ -1399,7 +1262,7 @@ const ctaScene = {
                         <h3 className="mt-2 text-3xl font-black text-white">
                           {item.title}
                         </h3>
-                      </motion.div>
+                      </div>
                     </div>
 
                     <div className="p-6">
