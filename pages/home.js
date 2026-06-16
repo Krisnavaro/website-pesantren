@@ -1357,6 +1357,7 @@ const ctaScene = {
   style={programScene}
   className="flex min-h-[100svh] flex-col justify-center"
 >
+          <div className="mt-16 sm:mt-20">
           <SectionHeader
             badge="Program Pembinaan"
             title="Program santri yang aktif dan bermakna"
@@ -1410,6 +1411,7 @@ const ctaScene = {
                 </TiltCard>
               </Reveal>
             ))}
+          </div>
           </div>
         </Container>
       </Section>
