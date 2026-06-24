@@ -58,7 +58,7 @@ export default function OwnerSantri() {
     fetchSantri();
   }, [filterStatus, filterJenjang, filterKelas, filterGender]);
 
-  const checkOwnerAccess = () => {
+  function checkOwnerAccess() {
     const session = localStorage.getItem("session");
     const userOnly = localStorage.getItem("user");
 
@@ -111,7 +111,7 @@ export default function OwnerSantri() {
     return result;
   };
 
-  const fetchSantri = async () => {
+  async function fetchSantri() {
     try {
       setLoading(true);
 
@@ -414,7 +414,7 @@ if (checking) {
                     onChange={(e) => setFilterJenjang(e.target.value)}
                   >
                     <option value="">Semua Jenjang</option>
-                    <option value="SMP">SMP</option>
+                    <option value="MTS">MTS</option>
                     <option value="SMK">SMK</option>
                     <option value="Takhassus">Takhassus</option>
                   </SelectInput>
@@ -529,7 +529,7 @@ if (checking) {
                           <InsightBadge
                             icon={<FaSchool />}
                             label={`${
-                              dataSantri.smp +
+                              dataSantri.mts +
                               dataSantri.smk +
                               dataSantri.takhassus
                             } jenjang`}
@@ -561,8 +561,8 @@ if (checking) {
                       </div>
 
                       <StatusProgress
-                        label="SMP"
-                        value={dataSantri.smp}
+                        label="MTS"
+                        value={dataSantri.mts}
                         total={dataSantri.total}
                         color="bg-emerald-400"
                       />

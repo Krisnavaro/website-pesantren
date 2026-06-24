@@ -50,7 +50,7 @@ router.post(
       if (form.jenjang !== "Takhassus" && !form.kelas) {
         return res.status(400).json({
           success: false,
-          message: "Kelas wajib dipilih untuk jenjang SMP atau SMK.",
+          message: "Kelas wajib dipilih untuk jenjang MTS atau SMK.",
         });
       }
 

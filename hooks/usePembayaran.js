@@ -70,7 +70,7 @@ export const usePembayaran = () => {
     }
   };
 
-  const bayar = async ({ item, metode, file }) => {
+  const bayar = async ({ item, metode, file, nominal_dibayar }) => {
     try {
       const session = getSession();
 
@@ -97,11 +97,14 @@ export const usePembayaran = () => {
       setUploadingId(item.id);
 
       const formData = new FormData();
-formData.append("user_id", session.user.id);
-formData.append("metode", metode);
-formData.append("bukti", file);
+      formData.append("user_id", session.user.id);
+      formData.append("metode", metode);
+      formData.append("bukti", file);
+      if (nominal_dibayar) {
+        formData.append("nominal_dibayar", nominal_dibayar);
+      }
 
-const response = await fetch(
+      const response = await fetch(
   `${API_URL}/api/santri/pembayaran/${item.id}/konfirmasi`,
   {
     method: "POST",

@@ -101,6 +101,7 @@ const theme = {
 
   const [selectedMethod, setSelectedMethod] = useState({});
   const [selectedFile, setSelectedFile] = useState({});
+  const [selectedNominal, setSelectedNominal] = useState({});
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
@@ -159,6 +160,7 @@ const theme = {
       item,
       metode: selectedMethod[item.id],
       file: selectedFile[item.id],
+      nominal_dibayar: selectedNominal[item.id] || item.nominal,
     });
   };
 
@@ -606,6 +608,8 @@ if (checking) {
                         setSelectedMethod={setSelectedMethod}
                         selectedFile={selectedFile}
                         setSelectedFile={setSelectedFile}
+                        selectedNominal={selectedNominal}
+                        setSelectedNominal={setSelectedNominal}
                         fileRefs={fileRefs}
                         uploadingId={uploadingId}
                         onConfirm={handleConfirmPayment}
@@ -743,6 +747,8 @@ function PaymentCard({
   setSelectedMethod,
   selectedFile,
   setSelectedFile,
+  selectedNominal,
+  setSelectedNominal,
   fileRefs,
   uploadingId,
   onConfirm,
@@ -852,6 +858,26 @@ function PaymentCard({
                   <option value="cash">Cash</option>
                   <option value="ewallet">E-Wallet</option>
                 </select>
+
+                <div className="mt-4">
+                  <label className="mb-2 block text-xs font-black uppercase tracking-wide text-slate-500">
+                    Nominal Pembayaran (Cicilan)
+                  </label>
+                  <input
+                    type="number"
+                    value={selectedNominal[item.id] !== undefined ? selectedNominal[item.id] : item.nominal}
+                    onChange={(e) =>
+                      setSelectedNominal({
+                        ...selectedNominal,
+                        [item.id]: e.target.value,
+                      })
+                    }
+                    className="h-14 w-full rounded-2xl border border-[#D8C287] bg-white px-4 text-sm font-bold text-slate-700 outline-none transition focus:border-yellow-500 focus:ring-4 focus:ring-yellow-100"
+                    placeholder="Masukkan nominal"
+                    max={item.nominal}
+                  />
+                  <p className="mt-1 text-[10px] text-slate-500">Ubah nominal jika ingin membayar sebagian.</p>
+                </div>
               </div>
 
               <PaymentInfo method={selectedMethod[item.id]} />
@@ -888,6 +914,7 @@ function PaymentCard({
               hidden
               accept="image/*,.pdf"
               ref={(el) => {
+                // eslint-disable-next-line
                 fileRefs.current[item.id] = el;
               }}
               onChange={(e) =>

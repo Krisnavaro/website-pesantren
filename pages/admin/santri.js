@@ -86,6 +86,7 @@ export default function SantriPage() {
 
   const [openModal, setOpenModal] = useState(false);
   const [openDetail, setOpenDetail] = useState(false);
+  const [openMassPromote, setOpenMassPromote] = useState(false);
   const [selectedSantri, setSelectedSantri] = useState(null);
 
   const [editId, setEditId] = useState(null);
@@ -109,7 +110,7 @@ export default function SantriPage() {
     );
   };
 
-  const fetchSantri = async () => {
+  async function fetchSantri() {
     try {
       setLoading(true);
 
@@ -387,7 +388,7 @@ export default function SantriPage() {
       tampil: filteredSantri.length,
       putra: santri.filter((s) => s.jenis_kelamin === "Laki-laki").length,
       putri: santri.filter((s) => s.jenis_kelamin === "Perempuan").length,
-      smp: santri.filter((s) => s.jenjang === "SMP").length,
+      mts: santri.filter((s) => s.jenjang === "MTS").length,
       smk: santri.filter((s) => s.jenjang === "SMK").length,
       takhassus: santri.filter((s) => s.jenjang === "Takhassus").length,
     };
@@ -492,7 +493,7 @@ if (checking) {
                 <StatCard title="Total Aktif" value={stats.total} icon={<FaUsers />} color="bg-green-600 text-white" />
                 <StatCard title="Putra" value={stats.putra} icon={<FaUserGraduate />} color="bg-blue-600 text-white" />
                 <StatCard title="Putri" value={stats.putri} icon={<FaVenusMars />} color="bg-pink-500 text-white" />
-                <StatCard title="SMP" value={stats.smp} icon={<FaSchool />} color="bg-emerald-600 text-white" />
+                <StatCard title="MTS" value={stats.mts} icon={<FaSchool />} color="bg-emerald-600 text-white" />
                 <StatCard title="SMK" value={stats.smk} icon={<FaChild />} color="bg-yellow-400 text-green-950" />
                 <StatCard title="Takhassus" value={stats.takhassus} icon={<FaBookOpen />} color="bg-purple-600 text-white" />
               </div>
@@ -521,16 +522,26 @@ if (checking) {
                       </p>
                     </div>
 
-                    <button
-                      onClick={() => {
-                        resetForm();
-                        setOpenModal(true);
-                      }}
-                      className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-[#064E3B] px-5 font-black text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-[#086B4F]"
-                    >
-                      <FaPlus />
-                      Tambah Santri
-                    </button>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <button
+                        onClick={() => setOpenMassPromote(true)}
+                        className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-[#4A3410] px-5 font-black text-yellow-300 shadow-lg transition hover:-translate-y-0.5 hover:bg-[#5C4114]"
+                      >
+                        <FaLayerGroup />
+                        Naik Kelas Massal
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          resetForm();
+                          setOpenModal(true);
+                        }}
+                        className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-[#064E3B] px-5 font-black text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-[#086B4F]"
+                      >
+                        <FaPlus />
+                        Tambah Santri
+                      </button>
+                    </div>
                   </div>
 
                   <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
@@ -554,7 +565,7 @@ if (checking) {
                       className="h-12 rounded-2xl border border-[#D8C287] bg-white/80 px-4 text-sm font-semibold text-slate-700 outline-none transition focus:border-yellow-500 focus:bg-white focus:ring-4 focus:ring-yellow-100"
                     >
                       <option value="">Semua Jenjang</option>
-                      <option value="SMP">SMP</option>
+                      <option value="MTS">MTS</option>
                       <option value="SMK">SMK</option>
                       <option value="Takhassus">Takhassus</option>
                     </select>
@@ -653,6 +664,17 @@ if (checking) {
               handleEdit(selectedSantri);
               setOpenDetail(false);
             }}
+          />
+        )}
+
+        {openMassPromote && (
+          <MassPromoteModal
+            onClose={() => setOpenMassPromote(false)}
+            onSuccess={() => {
+              setOpenMassPromote(false);
+              fetchSantri();
+            }}
+            adminInfo={{ admin_id: "admin-id-placeholder", nama_admin: "Admin" }} // Replace with actual context later
           />
         )}
       </main>
@@ -931,7 +953,7 @@ function FormModal({
                     kelas: v === "Takhassus" ? "" : form.kelas,
                   })
                 }
-                options={["SMP", "SMK", "Takhassus"]}
+                options={["MTS", "SMK", "Takhassus"]}
               />
 
               <Input
@@ -1198,20 +1220,141 @@ function InfoBox({ icon, title, items }) {
 
       <div className="space-y-3">
         {items.map(([label, value]) => (
-          <div
-            key={label}
-            className="flex justify-between gap-4 border-b border-[#E7D7A7] pb-2 last:border-none"
-          >
-            <span className="text-sm text-slate-500">{label}</span>
-            <span className="text-right text-sm font-bold text-slate-800">
-              {value || "-"}
+          <div key={label} className="flex flex-col border-b border-[#E7D7A7]/50 pb-2 last:border-0 last:pb-0">
+            <span className="text-[11px] font-black uppercase tracking-wider text-slate-400">
+              {label}
             </span>
+            <span className="font-semibold text-slate-700">{value || "-"}</span>
           </div>
         ))}
       </div>
     </div>
   );
 }
+
+function MassPromoteModal({ onClose, onSuccess, adminInfo }) {
+  const [form, setForm] = useState({
+    jenjang: "",
+    fromKelas: "",
+    toKelas: "",
+  });
+  const [loading, setLoading] = useState(false);
+
+  const getKelasOptions = (j) => {
+    if (j === "MTS") return ["7", "8", "9"];
+    if (j === "SMK") return ["10", "11", "12"];
+    if (j === "Takhassus") return ["1", "2", "3", "4"];
+    return [];
+  };
+
+  const fromOptions = getKelasOptions(form.jenjang);
+  const toOptions = form.jenjang ? [...getKelasOptions(form.jenjang), "Lulus / Alumni"] : [];
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!form.jenjang || !form.fromKelas || !form.toKelas) {
+      alert("Semua bidang wajib diisi.");
+      return;
+    }
+
+    const confirmMsg = `PERINGATAN!\n\nAnda akan menaikkan SEMUA santri ${form.jenjang} yang saat ini berada di kelas ${form.fromKelas} menjadi kelas ${form.toKelas}.\n\nTindakan ini akan mempengaruhi puluhan/ratusan data santri sekaligus. Apakah Anda yakin?`;
+
+    if (!confirm(confirmMsg)) return;
+
+    try {
+      setLoading(true);
+      const res = await fetch(`${API_URL}/api/admin/santri/bulk-promote`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          jenjang: form.jenjang,
+          fromKelas: form.fromKelas,
+          toKelas: form.toKelas,
+          admin_id: adminInfo?.admin_id,
+          nama_admin: adminInfo?.nama_admin,
+        }),
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Gagal menaikkan kelas.");
+      }
+
+      alert(data.message);
+      onSuccess();
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md">
+      <div className="relative w-full max-w-md rounded-[32px] bg-gradient-to-br from-[#FFFDF6] to-[#E7DCC5] p-6 shadow-2xl overflow-hidden border border-[#D8C287]">
+        <div className="absolute -right-16 -top-16 h-32 w-32 rounded-full bg-yellow-300/20 blur-2xl" />
+        <div className="relative z-10">
+          <div className="mb-6 flex items-center justify-between border-b border-[#D8C287] pb-4">
+            <h2 className="text-2xl font-black text-[#1F1607] flex items-center gap-2">
+              <FaLayerGroup className="text-yellow-600" /> Naik Kelas Massal
+            </h2>
+            <button onClick={onClose} className="text-slate-400 hover:text-slate-700">
+              <FaTimes size={24} />
+            </button>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Select
+              label="Jenjang Target"
+              value={form.jenjang}
+              onChange={(v) => setForm({ ...form, jenjang: v })}
+              options={["MTS", "SMK", "Takhassus"]}
+            />
+            
+            <div className="flex items-center gap-2">
+              <div className="flex-1">
+                <Select
+                  label="Kelas Lama"
+                  value={form.fromKelas}
+                  onChange={(v) => setForm({ ...form, fromKelas: v })}
+                  options={fromOptions}
+                />
+              </div>
+              <div className="px-2 text-xl font-bold text-slate-400">→</div>
+              <div className="flex-1">
+                <Select
+                  label="Kelas Baru"
+                  value={form.toKelas}
+                  onChange={(v) => setForm({ ...form, toKelas: v })}
+                  options={toOptions}
+                />
+              </div>
+            </div>
+
+            <div className="mt-6 flex gap-3">
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex-1 rounded-2xl bg-slate-200 py-3 font-bold text-slate-700 hover:bg-slate-300"
+              >
+                Batal
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex-1 rounded-2xl bg-red-600 py-3 font-black text-white hover:bg-red-700 disabled:opacity-50 shadow-lg"
+              >
+                {loading ? "Memproses..." : "Eksekusi"}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 
 function ServerMaintenanceModal({ message, onRetry, onClose }) {
   return (

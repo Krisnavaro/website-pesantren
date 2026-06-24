@@ -1,3 +1,9 @@
+/**
+ * @file santriRoutes.js
+ * @description Menangani seluruh endpoint dan logika backend yang diakses oleh role "santri".
+ * Termasuk pengelolaan dashboard santri, data profil, pengumpulan tugas, dan konfirmasi pembayaran tagihan.
+ * @module routes/santriRoutes
+ */
 import express from "express";
 import { supabase } from "../config/supabase.js";
 import upload from "../middleware/upload.js";
@@ -329,7 +335,7 @@ router.post(
   upload.single("bukti"),
   async (req, res) => {
     try {
-      const { user_id, tagihan_id, metode } = req.body;
+      const { user_id, tagihan_id, metode, nominal_dibayar } = req.body;
 
       if (!user_id || !tagihan_id || !metode) {
         return res.status(400).json({
@@ -374,14 +380,17 @@ router.post(
         });
       }
 
-      const { data: existingPembayaran } = await supabase
+      const { data: existingPembayaranList } = await supabase
         .from("pembayaran")
         .select("*")
         .eq("tagihan_id", tagihan_id)
         .eq("santri_id", santri.id)
-        .maybeSingle();
+        .in("status", ["belum_bayar", "pending", "ditolak"])
+        .order("created_at", { ascending: false })
+        .limit(1);
 
-      let pembayaranId = existingPembayaran?.id || null;
+      let pembayaranId = existingPembayaranList?.[0]?.id || null;
+      const nominalPembayaran = nominal_dibayar ? Number(nominal_dibayar) : tagihan.nominal;
 
       if (!pembayaranId) {
         const { data: pembayaranBaru, error: createError } = await supabase
@@ -390,7 +399,7 @@ router.post(
             santri_id: santri.id,
             tagihan_id,
             jenis: tagihan.jenis,
-            nominal: tagihan.nominal,
+            nominal: nominalPembayaran,
             metode,
             deadline: tagihan.deadline,
             status: "pending",
@@ -482,7 +491,7 @@ router.post(
   async (req, res) => {
     try {
       const { pembayaran_id } = req.params;
-      const { metode, user_id } = req.body;
+      const { metode, user_id, nominal_dibayar } = req.body;
 
       if (!pembayaran_id) {
         return res.status(400).json({
@@ -551,13 +560,37 @@ router.post(
 
       const buktiUrl = publicUrlData.publicUrl;
 
+      // Fetch existing pembayaran
+      const { data: existingPembayaran, error: existingError } = await supabase
+        .from("pembayaran")
+        .select("*")
+        .eq("id", pembayaran_id)
+        .single();
+
+      if (existingError || !existingPembayaran) {
+        return res.status(404).json({
+          success: false,
+          message: "Pembayaran tidak ditemukan.",
+        });
+      }
+
+      const nominalUpdate = nominal_dibayar ? Number(nominal_dibayar) : existingPembayaran.nominal;
+      const sisaNominal = existingPembayaran.nominal - nominalUpdate;
+
+      const updatePayload = {
+        metode,
+        bukti_transfer: buktiUrl,
+        status: "pending",
+        tanggal_bayar: new Date().toISOString(),
+      };
+
+      if (nominal_dibayar) {
+        updatePayload.nominal = nominalUpdate;
+      }
+
       const { data: updated, error: updateError } = await supabase
         .from("pembayaran")
-        .update({
-          metode,
-          bukti_transfer: buktiUrl,
-          status: "pending",
-        })
+        .update(updatePayload)
         .eq("id", pembayaran_id)
         .eq("santri_id", santri.id)
         .select()
@@ -568,6 +601,18 @@ router.post(
           success: false,
           message: "Gagal update pembayaran.",
           error: updateError.message,
+        });
+      }
+
+      // If they paid partially, insert a new belum_bayar row for the remaining balance
+      if (sisaNominal > 0 && existingPembayaran.status === "belum_bayar") {
+        await supabase.from("pembayaran").insert({
+          santri_id: santri.id,
+          tagihan_id: existingPembayaran.tagihan_id,
+          jenis: existingPembayaran.jenis,
+          nominal: sisaNominal,
+          status: "belum_bayar",
+          deadline: existingPembayaran.deadline,
         });
       }
 
@@ -630,7 +675,8 @@ router.get("/dashboard/:user_id", async (req, res) => {
         deadline,
         tanggal_bayar,
         created_at,
-        tagihan_id
+        tagihan_id,
+        tagihan:tagihan_id(status)
       `)
       .eq("santri_id", santri.id)
       .order("created_at", { ascending: false });
@@ -645,9 +691,14 @@ router.get("/dashboard/:user_id", async (req, res) => {
 
     const listPembayaran = pembayaran || [];
 
-    const belumBayar = listPembayaran.filter(
-      (item) => item.status === "belum_bayar" || item.status === "ditolak"
-    );
+    const belumBayar = listPembayaran.filter((item) => {
+      const isBelumBayar = item.status === "belum_bayar" || item.status === "ditolak";
+      // Abaikan jika tagihannya ternyata sudah lunas (menangani bug data ganda yang lama)
+      if (isBelumBayar && item.tagihan && item.tagihan.status === "lunas") {
+        return false;
+      }
+      return isBelumBayar;
+    });
 
     const pending = listPembayaran.filter(
       (item) => item.status === "pending"

@@ -38,7 +38,7 @@ const ADMIN_WHATSAPP_MESSAGE =
   "Assalamu'alaikum Admin Pesantren Al-Furqon, saya ingin bertanya mengenai akun login saya.";
 
 const WHATSAPP_ADMIN_URL = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodeURIComponent(
-  ADMIN_WHATSAPP_MESSAGE
+  ADMIN_WHATSAPP_MESSAGE,
 )}`;
 
 /* =========================================================
@@ -245,7 +245,7 @@ export default function Login() {
   };
 
   const showMaintenancePopup = (
-    message = "Server backend belum aktif atau sedang maintenance. Jalankan backend Express terlebih dahulu."
+    message = "Server backend belum aktif atau sedang maintenance. Jalankan backend Express terlebih dahulu.",
   ) => {
     setServerMaintenance(true);
     setServerMessage(message);
@@ -254,7 +254,7 @@ export default function Login() {
   const fetchJson = async (url, options = {}) => {
     if (!API_URL) {
       showMaintenancePopup(
-        "Alamat backend belum diatur. Cek NEXT_PUBLIC_API_URL di file .env.local frontend."
+        "Alamat backend belum diatur. Cek NEXT_PUBLIC_API_URL di file .env.local frontend.",
       );
 
       throw new Error("NEXT_PUBLIC_API_URL belum diatur di .env.local");
@@ -269,11 +269,11 @@ export default function Login() {
         console.error("Response bukan JSON:", text);
 
         showMaintenancePopup(
-          "Backend merespons, tetapi tidak mengembalikan JSON yang valid. Cek route Express backend."
+          "Backend merespons, tetapi tidak mengembalikan JSON yang valid. Cek route Express backend.",
         );
 
         throw new Error(
-          "Backend tidak mengembalikan JSON. Pastikan Express aktif di http://localhost:5000"
+          "Backend tidak mengembalikan JSON. Pastikan Express aktif di http://localhost:5000",
         );
       }
 
@@ -292,7 +292,7 @@ export default function Login() {
     } catch (error) {
       if (isServerError(error)) {
         showMaintenancePopup(
-          "Server backend belum aktif atau sedang maintenance. Login belum dapat diproses."
+          "Server backend belum aktif atau sedang maintenance. Login belum dapat diproses.",
         );
       }
 
@@ -339,7 +339,7 @@ export default function Login() {
 
       if (isServerError(error)) {
         showMaintenancePopup(
-          "Server backend belum aktif atau sedang maintenance. Login belum dapat diproses."
+          "Server backend belum aktif atau sedang maintenance. Login belum dapat diproses.",
         );
         return;
       }
@@ -538,6 +538,24 @@ export default function Login() {
                 }
               />
 
+              <div className="-mt-3 flex justify-end">
+                <button
+                  type="button"
+                  onClick={() =>
+                    openModal({
+                      type: "warning",
+                      icon: "🔑",
+                      title: "Lupa Password?",
+                      message:
+                        "Sistem saat ini tidak dapat mereset password secara otomatis. Silakan hubungi Administrator Pesantren Al-Furqon melalui WhatsApp untuk mereset password akun Anda.",
+                    })
+                  }
+                  className="text-sm font-bold text-emerald-100 transition hover:text-yellow-300 hover:underline"
+                >
+                  Lupa password?
+                </button>
+              </div>
+
               <motion.button
                 onClick={login}
                 disabled={loading}
@@ -574,14 +592,12 @@ export default function Login() {
                   </div>
 
                   <div>
-                    <p className="font-black text-yellow-300">
-                      Pemberitahuan
-                    </p>
+                    <p className="font-black text-yellow-300">Pemberitahuan</p>
 
                     <p className="mt-1 text-sm leading-relaxed text-emerald-50">
                       Masukkan email dan password yang diberikan saat
-                      pendaftaran. Setelah mendaftar, mohon tunggu maksimal
-                      1x24 jam untuk proses verifikasi admin.
+                      pendaftaran. Setelah mendaftar, mohon tunggu maksimal 1x24
+                      jam untuk proses verifikasi admin.
                     </p>
                   </div>
                 </div>
@@ -604,11 +620,7 @@ export default function Login() {
       {/* MODAL STATUS SANTRI */}
       <AnimatePresence>
         {modal.show && (
-          <StatusModal
-            modal={modal}
-            closeModal={closeModal}
-            router={router}
-          />
+          <StatusModal modal={modal} closeModal={closeModal} router={router} />
         )}
       </AnimatePresence>
 
@@ -668,18 +680,18 @@ function StatusModal({ modal, closeModal, router }) {
           note: "bg-red-500/10 border-red-400/20 text-red-100",
         }
       : modal.type === "pending"
-      ? {
-          iconBox: "bg-yellow-400/15 text-yellow-300 border-yellow-300/20",
-          title: "text-yellow-200",
-          button: "bg-yellow-400 hover:bg-yellow-300 text-emerald-950",
-          note: "bg-yellow-400/10 border-yellow-300/20 text-yellow-100",
-        }
-      : {
-          iconBox: "bg-yellow-400/15 text-yellow-300 border-yellow-300/20",
-          title: "text-white",
-          button: "bg-yellow-400 hover:bg-yellow-300 text-emerald-950",
-          note: "bg-white/10 border-white/10 text-emerald-100",
-        };
+        ? {
+            iconBox: "bg-yellow-400/15 text-yellow-300 border-yellow-300/20",
+            title: "text-yellow-200",
+            button: "bg-yellow-400 hover:bg-yellow-300 text-emerald-950",
+            note: "bg-yellow-400/10 border-yellow-300/20 text-yellow-100",
+          }
+        : {
+            iconBox: "bg-yellow-400/15 text-yellow-300 border-yellow-300/20",
+            title: "text-white",
+            button: "bg-yellow-400 hover:bg-yellow-300 text-emerald-950",
+            note: "bg-white/10 border-white/10 text-emerald-100",
+          };
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">

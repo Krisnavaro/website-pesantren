@@ -759,7 +759,7 @@ function CompositionPanel({ dashboard }) {
         </div>
 
         <div className="mt-5 space-y-4">
-          <ProgressRow label="SMP" value={santri.smp || 0} total={total} />
+          <ProgressRow label="MTS" value={santri.mts || 0} total={total} />
           <ProgressRow label="SMK" value={santri.smk || 0} total={total} />
           <ProgressRow
             label="Takhassus"

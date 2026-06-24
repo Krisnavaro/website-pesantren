@@ -2,7 +2,7 @@
 
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -18,11 +18,29 @@ export default function PendaftaranWizard() {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [buktiTransfer, setBuktiTransfer] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [jurusanList, setJurusanList] = useState(["Pemasaran"]);
+
+  useEffect(() => {
+    fetchJurusan();
+  }, []);
+
+  const fetchJurusan = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/jurusan`);
+      const result = await res.json();
+      if (result.success && result.data && result.data.length > 0) {
+        setJurusanList(result.data.map((j) => j.nama_jurusan));
+      }
+    } catch (err) {
+      console.error("Gagal mengambil data jurusan:", err);
+    }
+  };
 
   const [form, setForm] = useState({
     nama: "",
     jenjang: "",
     kelas: "",
+    jurusan: "",
     metode: "",
     jenisKelamin: "",
     nisn: "",
@@ -58,84 +76,84 @@ export default function PendaftaranWizard() {
   const back = () => setStep((s) => Math.max(s - 1, 1));
 
   const submitData = async () => {
-  try {
-    if (!API_URL) {
-      alert("NEXT_PUBLIC_API_URL belum diatur di .env.local");
-      return;
-    }
+    try {
+      if (!API_URL) {
+        alert("NEXT_PUBLIC_API_URL belum diatur di .env.local");
+        return;
+      }
 
-    if (!paid) {
-      alert("Klik konfirmasi pembayaran dulu");
-      return;
-    }
+      if (!paid) {
+        alert("Klik konfirmasi pembayaran dulu");
+        return;
+      }
 
-    if (!form.metode) {
-      alert("Pilih metode pembayaran dulu");
-      return;
-    }
+      if (!form.metode) {
+        alert("Pilih metode pembayaran dulu");
+        return;
+      }
 
-    if (!buktiTransfer) {
-      alert("Upload bukti pembayaran dulu");
-      return;
-    }
+      if (!buktiTransfer) {
+        alert("Upload bukti pembayaran dulu");
+        return;
+      }
 
-    setLoading(true);
+      setLoading(true);
 
-    const payload = new FormData();
+      const payload = new FormData();
 
-    Object.entries(form).forEach(([key, value]) => {
-      payload.append(key, value || "");
-    });
+      Object.entries(form).forEach(([key, value]) => {
+        payload.append(key, value || "");
+      });
 
-    payload.append("paid", paid ? "true" : "false");
+      payload.append("paid", paid ? "true" : "false");
 
-    if (foto) {
-      payload.append("foto", foto);
-    }
+      if (foto) {
+        payload.append("foto", foto);
+      }
 
-    if (buktiTransfer) {
-      payload.append("buktiTransfer", buktiTransfer);
-    }
+      if (buktiTransfer) {
+        payload.append("buktiTransfer", buktiTransfer);
+      }
 
-    const response = await fetch(`${API_URL}/api/pendaftaran`, {
-      method: "POST",
-      body: payload,
-    });
+      const response = await fetch(`${API_URL}/api/pendaftaran`, {
+        method: "POST",
+        body: payload,
+      });
 
-    const contentType = response.headers.get("content-type");
+      const contentType = response.headers.get("content-type");
 
-    if (!contentType || !contentType.includes("application/json")) {
-      const text = await response.text();
-      console.error("Response bukan JSON:", text);
+      if (!contentType || !contentType.includes("application/json")) {
+        const text = await response.text();
+        console.error("Response bukan JSON:", text);
 
-      throw new Error(
-        "Backend tidak mengembalikan JSON. Cek apakah backend Express aktif di http://localhost:5000"
-      );
-    }
+        throw new Error(
+          "Backend tidak mengembalikan JSON. Cek apakah backend Express aktif di http://localhost:5000",
+        );
+      }
 
-    const result = await response.json();
+      const result = await response.json();
 
-    if (!response.ok || !result.success) {
-      throw new Error(result.message || "Gagal mengirim pendaftaran");
-    }
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || "Gagal mengirim pendaftaran");
+      }
 
-    setStatus(`
+      setStatus(`
 Akun berhasil dibuat!
 
 Email: ${result.data.email}
 Password: ${result.data.password}
 `);
 
-    setStep(4);
-  } catch (error) {
-    console.error("SUBMIT ERROR:", error);
-    alert(error.message);
-  } finally {
-    setLoading(false);
-  }
-};
+      setStep(4);
+    } catch (error) {
+      console.error("SUBMIT ERROR:", error);
+      alert(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-console.log("API_URL =", API_URL);
+  console.log("API_URL =", API_URL);
 
   return (
     <div className="overflow-x-hidden bg-gradient-to-b from-[#eefaf2] via-white to-[#eefaf2] min-h-screen">
@@ -284,17 +302,18 @@ console.log("API_URL =", API_URL);
                         </label>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          {["SMP", "SMK", "Takhassus"].map((item) => (
+                          {["MTS", "SMK", "Takhassus"].map((item) => (
                             <button
                               type="button"
                               key={item}
                               onClick={() => {
-                              setForm({
-                                ...form,
-                                jenjang: item,
-                                kelas: item === "Takhassus" ? "Takhassus" : "",
-                              });
-                            }}
+                                setForm({
+                                  ...form,
+                                  jenjang: item,
+                                  kelas: item === "Takhassus" ? "Takhassus" : "",
+                                  jurusan: item === "SMK" && jurusanList.length > 0 ? jurusanList[0] : "",
+                                });
+                              }}
                               className={`p-6 rounded-3xl border transition-all duration-300 backdrop-blur-xl ${
                                 form.jenjang === item
                                   ? "bg-yellow-400 text-black border-yellow-300 scale-105 shadow-[0_10px_35px_rgba(250,204,21,0.35)]"
@@ -302,7 +321,7 @@ console.log("API_URL =", API_URL);
                               }`}
                             >
                               <div className="text-5xl mb-4">
-                                {item === "SMP"
+                                {item === "MTS"
                                   ? "📘"
                                   : item === "SMK"
                                     ? "🛠️"
@@ -312,8 +331,8 @@ console.log("API_URL =", API_URL);
                               <h3 className="font-black text-xl">{item}</h3>
 
                               <p className="text-sm mt-3 opacity-80 leading-relaxed">
-                                {item === "SMP" &&
-                                  "Program pendidikan tingkat SMP berbasis pesantren."}
+                                {item === "MTS" &&
+                                  "Program pendidikan tingkat MTS berbasis pesantren."}
 
                                 {item === "SMK" &&
                                   "Program kejuruan dan keterampilan santri modern."}
@@ -326,53 +345,68 @@ console.log("API_URL =", API_URL);
                         </div>
 
                         {form.jenjang && form.jenjang !== "Takhassus" && (
-  <div className="mt-6">
-    <label className="text-sm text-green-100 mb-4 block">
-      Pilih Kelas
-    </label>
+                          <div className="mt-6 space-y-6">
+                            <div>
+                              <label className="text-sm text-green-100 mb-4 block">
+                                Pilih Kelas
+                              </label>
 
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {form.jenjang === "SMP" &&
-        ["7", "8", "9"].map((item) => (
-          <ClassButton
-            key={item}
-            label={`Kelas ${item}`}
-            active={form.kelas === item}
-            onClick={() =>
-              setForm({
-                ...form,
-                kelas: item,
-              })
-            }
-          />
-        ))}
+                              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                {form.jenjang === "MTS" &&
+                                  ["7", "8", "9"].map((item) => (
+                                    <ClassButton
+                                      key={item}
+                                      label={`Kelas ${item}`}
+                                      active={form.kelas === item}
+                                      onClick={() =>
+                                        setForm({
+                                          ...form,
+                                          kelas: item,
+                                        })
+                                      }
+                                    />
+                                  ))}
 
-      {form.jenjang === "SMK" &&
-        ["10", "11", "12"].map((item) => (
-          <ClassButton
-            key={item}
-            label={`Kelas ${item}`}
-            active={form.kelas === item}
-            onClick={() =>
-              setForm({
-                ...form,
-                kelas: item,
-              })
-            }
-          />
-        ))}
-    </div>
-  </div>
-)}
+                                {form.jenjang === "SMK" &&
+                                  ["10", "11", "12"].map((item) => (
+                                    <ClassButton
+                                      key={item}
+                                      label={`Kelas ${item}`}
+                                      active={form.kelas === item}
+                                      onClick={() =>
+                                        setForm({
+                                          ...form,
+                                          kelas: item,
+                                        })
+                                      }
+                                    />
+                                  ))}
+                              </div>
+                            </div>
 
-{form.jenjang === "Takhassus" && (
-  <div className="mt-6 rounded-2xl border border-yellow-400/30 bg-yellow-400/10 p-5 text-yellow-100">
-    <p className="font-semibold">Program Takhassus</p>
-    <p className="text-sm mt-1 opacity-90">
-      Program Takhassus tidak menggunakan kelas seperti SMP atau SMK.
-    </p>
-  </div>
-)}
+                            {form.jenjang === "SMK" && (
+                              <Select
+                                icon="🎓"
+                                label="Jurusan"
+                                name="jurusan"
+                                value={form.jurusan}
+                                onChange={handleChange}
+                                options={jurusanList}
+                                hidePlaceholder={true}
+                              />
+                            )}
+                          </div>
+                        )}
+
+                        {form.jenjang === "Takhassus" && (
+                          <div className="mt-6 rounded-2xl border border-yellow-400/30 bg-yellow-400/10 p-5 text-yellow-100">
+                            <p className="font-semibold">Program Takhassus</p>
+                            <p className="text-sm mt-1 opacity-90">
+                              Program Takhassus tidak menggunakan kelas seperti
+                              MTS atau SMK.
+                            </p>
+                          </div>
+                        )}
                       </div>
 
                       <Input
@@ -558,7 +592,7 @@ console.log("API_URL =", API_URL);
                         </p>
 
                         <h2 className="text-6xl font-black text-white mt-5">
-                          Rp 150.000
+                          Rp 250.000
                         </h2>
 
                         <p className="text-green-100 mt-6 leading-relaxed max-w-xl mx-auto">
@@ -785,7 +819,7 @@ function Input({ label, name, onChange, type = "text", icon, value }) {
   );
 }
 
-function Select({ label, name, onChange, options, icon, value }) {
+function Select({ label, name, onChange, options, icon, value, hidePlaceholder }) {
   return (
     <div className="flex flex-col">
       <label className="text-sm text-green-100 mb-2">{label}</label>
@@ -801,7 +835,7 @@ function Select({ label, name, onChange, options, icon, value }) {
           onChange={onChange}
           className="w-full bg-white/10 backdrop-blur-xl border border-white/10 text-white rounded-2xl pl-12 pr-5 py-4 outline-none transition-all duration-300 focus:border-yellow-400 focus:ring-4 focus:ring-yellow-400/10 hover:border-green-400/40"
         >
-          <option value="">Pilih {label}</option>
+          {!hidePlaceholder && <option value="">Pilih {label}</option>}
 
           {options.map((item, i) => (
             <option key={i} value={item} className="text-black">
@@ -882,7 +916,10 @@ function PaymentModal({ metode, buktiTransfer, setPaid, onClose }) {
         exit={{ scale: 0.8, opacity: 0 }}
         className="bg-gradient-to-b from-green-950 to-green-900 border border-white/10 rounded-3xl p-8 max-w-lg w-full text-white relative"
       >
-        <button onClick={onClose} className="absolute top-4 right-4 text-white text-2xl">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-white text-2xl"
+        >
           ✕
         </button>
 

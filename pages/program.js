@@ -14,7 +14,7 @@ import { useEffect, useMemo, useState } from "react";
 // ✅ Penggantinya
 import {
   FaMosque,
-  FaKaaba,            // ← ganti FaKaaba (tidak ada di fa6)
+  FaKaaba, // ← ganti FaKaaba (tidak ada di fa6)
   FaCampground,
   FaArrowRight,
   FaCircleCheck,
@@ -30,7 +30,7 @@ import {
   FaRotateRight,
   FaWrench,
   FaFilm,
-  FaListUl,           // ← ganti FaListUl & FaListUl (tidak ada di fa6)
+  FaListUl, // ← ganti FaListUl & FaListUl (tidak ada di fa6)
 } from "react-icons/fa6";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
@@ -50,9 +50,8 @@ const ADMIN_WHATSAPP_MESSAGE =
   "Assalamu'alaikum Admin Pesantren Al-Furqon, saya ingin bertanya mengenai pesantren.";
 
 const WHATSAPP_ADMIN_URL = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodeURIComponent(
-  ADMIN_WHATSAPP_MESSAGE
+  ADMIN_WHATSAPP_MESSAGE,
 )}`;
-
 
 /* =========================================================
    HELPERS
@@ -271,8 +270,8 @@ function StoryPanel({
     <div
       className={`group relative overflow-hidden rounded-[1.8rem] border-[3px] ${
         dark
-  ? "border-white/15 bg-emerald-950 text-white"
-  : "border-[#173c32]/10 bg-white/90 text-slate-900"
+          ? "border-white/15 bg-emerald-950 text-white"
+          : "border-[#173c32]/10 bg-white/90 text-slate-900"
       } shadow-[0_20px_55px_rgba(0,0,0,0.12)] backdrop-blur-xl ${className}`}
     >
       {/* header storyboard */}
@@ -318,7 +317,9 @@ function StoryPanel({
       {/* footer storyboard */}
       <div
         className={`border-t-[3px] px-4 py-3 text-[11px] font-black uppercase tracking-[0.2em] sm:px-5 ${
-          dark ? "border-white/10 bg-black/20 text-yellow-300" : "border-slate-200 bg-slate-50 text-emerald-800"
+          dark
+            ? "border-white/10 bg-black/20 text-yellow-300"
+            : "border-slate-200 bg-slate-50 text-emerald-800"
         }`}
       >
         {footerLabel}
@@ -486,7 +487,7 @@ export default function Program() {
       { id: "faq", label: "FAQ" },
       { id: "closing-scene", label: "Daftar" },
     ],
-    []
+    [],
   );
 
   /* ==========================================
@@ -554,7 +555,9 @@ export default function Program() {
 
   if (loading) return <LoadingPage />;
   if (maintenance || !programPage) {
-    return <ProgramMaintenance onRetry={fetchProgramData} checking={checking} />;
+    return (
+      <ProgramMaintenance onRetry={fetchProgramData} checking={checking} />
+    );
   }
 
   const { hero, programs, stats, timeline, gallery, advantages, faq } =
@@ -563,33 +566,36 @@ export default function Program() {
   const active = programs[activeProgram] || programs[0];
 
   return (
-  <main className="overflow-x-hidden bg-[#f6f1e4] text-slate-900">
-    <ScrollProgress />
-    <Navbar />
+    <main className="overflow-x-hidden bg-[#f6f1e4] text-slate-900">
+      <ScrollProgress />
+      <Navbar />
 
-    {/* NAVIGATOR */}
-    <div className="fixed right-5 top-1/2 z-[70] hidden -translate-y-1/2 xl:flex flex-col gap-3">
-      {sceneLinks.map((item) => (
-        <a
-          key={item.id}
-          href={`#${item.id}`}
-          className="group flex items-center justify-end gap-3"
-        >
-          <span className="rounded-full bg-emerald-950/80 px-3 py-1 text-[11px] font-black text-yellow-300 opacity-0 shadow-lg backdrop-blur-xl transition group-hover:opacity-100">
-            {item.label}
-          </span>
+      {/* NAVIGATOR */}
+      <div className="fixed right-5 top-1/2 z-[70] hidden -translate-y-1/2 xl:flex flex-col gap-3">
+        {sceneLinks.map((item) => (
+          <a
+            key={item.id}
+            href={`#${item.id}`}
+            className="group flex items-center justify-end gap-3"
+          >
+            <span className="rounded-full bg-emerald-950/80 px-3 py-1 text-[11px] font-black text-yellow-300 opacity-0 shadow-lg backdrop-blur-xl transition group-hover:opacity-100">
+              {item.label}
+            </span>
 
-          <span className="h-3 w-3 rounded-full border border-black/60 bg-yellow-300/40 shadow-[0_0_20px_rgba(250,204,21,0.5)] transition group-hover:scale-150 group-hover:bg-yellow-300" />
-        </a>
-      ))}
-    </div>
+            <span className="h-3 w-3 rounded-full border border-black/60 bg-yellow-300/40 shadow-[0_0_20px_rgba(250,204,21,0.5)] transition group-hover:scale-150 group-hover:bg-yellow-300" />
+          </a>
+        ))}
+      </div>
 
       {/* ======================================================
          HERO
       ====================================================== */}
       <Section id="hero" dark>
         <div className="absolute inset-0 bg-gradient-to-r from-[#041b15] via-[#062d22]/95 to-[#0d4f38]/45" />
-        <motion.div style={{ scale: heroImageScale }} className="absolute inset-0">
+        <motion.div
+          style={{ scale: heroImageScale }}
+          className="absolute inset-0"
+        >
           <SafeImage
             src={hero.image}
             alt="Background Program Pesantren"
@@ -616,7 +622,7 @@ export default function Program() {
             >
               <Badge light>{hero.badge}</Badge>
 
-              <h1 className="mt-5 font-mono text-[clamp(2.4rem,6vw,6rem)] font-black leading-[0.93] tracking-[-0.06em]">
+              <h1 className="mt-5 text-[clamp(2.4rem,6vw,6rem)] font-black leading-[0.93] tracking-[-0.06em]">
                 {hero.title}
                 <span className="block bg-gradient-to-r from-yellow-300 via-yellow-400 to-emerald-200 bg-clip-text text-transparent">
                   {hero.highlight}
@@ -742,10 +748,7 @@ export default function Program() {
       {/* ======================================================
          PROGRAM SHOWCASE
       ====================================================== */}
-      <Section
-        id="program-showcase"
-        className="scroll-mt-24 bg-[#f6f1e4]"
-      >
+      <Section id="program-showcase" className="scroll-mt-24 bg-[#f6f1e4]">
         <IslamicBackground />
 
         <Container className="flex min-h-[100svh] items-center">
@@ -880,8 +883,8 @@ export default function Program() {
                   <div className="mt-5 grid gap-4 md:grid-cols-[1.08fr_0.92fr]">
                     <div>
                       <p className="text-sm font-semibold leading-relaxed text-white sm:text-base">
-  {active.longDesc}
-</p>
+                        {active.longDesc}
+                      </p>
 
                       <Link href="/pendaftaran">
                         <button className="mt-5 inline-flex items-center gap-3 rounded-full bg-yellow-400 px-5 py-3 text-sm font-black text-emerald-950 transition hover:bg-yellow-300 sm:px-6 sm:text-base">
@@ -1216,76 +1219,77 @@ export default function Program() {
       {/* ======================================================
    CTA / ENDING
 ====================================================== */}
-<Section
-  id="closing-scene"
-  dark
-  className="bg-gradient-to-br from-[#f6f1e4] via-white to-emerald-50"
->
-  <IslamicBackground dark />
+      <Section
+        id="closing-scene"
+        dark
+        className="bg-gradient-to-br from-[#f6f1e4] via-white to-emerald-50"
+      >
+        <IslamicBackground dark />
 
-  <Container className="flex min-h-[100svh] items-center justify-center text-center px-4">
-    <motion.div
-      initial={{ opacity: 0, y: 45, scale: 0.96 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, amount: 0.25 }}
-      transition={{ duration: 0.7 }}
-      className="mx-auto w-full max-w-6xl"
-    >
-      <div className="rounded-[1.8rem] border-[3px] border-white/15 bg-emerald-950/95 text-white shadow-[0_25px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b-[3px] border-white/10 bg-black/20 px-4 py-3 sm:px-5">
-          <div className="flex items-center gap-3">
-            <div className="rounded-full bg-yellow-400 px-3 py-1 text-[10px] font-black uppercase tracking-[0.24em] text-emerald-950">
-              Scene 08
+        <Container className="flex min-h-[100svh] items-center justify-center text-center px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 45, scale: 0.96 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true, amount: 0.25 }}
+            transition={{ duration: 0.7 }}
+            className="mx-auto w-full max-w-6xl"
+          >
+            <div className="rounded-[1.8rem] border-[3px] border-white/15 bg-emerald-950/95 text-white shadow-[0_25px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl overflow-hidden">
+              {/* Header */}
+              <div className="flex items-center justify-between border-b-[3px] border-white/10 bg-black/20 px-4 py-3 sm:px-5">
+                <div className="flex items-center gap-3">
+                  <div className="rounded-full bg-yellow-400 px-3 py-1 text-[10px] font-black uppercase tracking-[0.24em] text-emerald-950">
+                    Scene 08
+                  </div>
+
+                  <p className="text-[10px] font-black uppercase tracking-[0.22em] text-emerald-100/80">
+                    Final Scene
+                  </p>
+                </div>
+
+                <FaFilm className="text-yellow-300" />
+              </div>
+
+              {/* Body */}
+              <div className="relative px-5 py-10 sm:px-8 sm:py-14 lg:px-12 lg:py-16">
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-yellow-300/10 via-transparent to-emerald-300/10" />
+
+                <div className="relative z-10">
+                  <h2 className="mx-auto max-w-4xl text-[clamp(2rem,5vw,4.8rem)] font-black leading-[1.02] tracking-[-0.05em] text-white">
+                    Mulai perjalanan santri melalui program yang aktif dan
+                    bermakna.
+                  </h2>
+
+                  <p className="mx-auto mt-6 max-w-3xl text-sm leading-relaxed text-emerald-50 sm:text-base lg:text-lg">
+                    Daftarkan calon santri sekarang dan ikuti proses pendidikan
+                    yang membangun ilmu, adab, keberanian, dan kemandirian.
+                  </p>
+
+                  <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
+                    <Link href="/pendaftaran">
+                      <button className="inline-flex w-full items-center justify-center gap-3 rounded-full bg-yellow-400 px-8 py-4 font-black text-emerald-950 shadow-[0_12px_35px_rgba(250,204,21,0.25)] transition hover:-translate-y-1 hover:bg-yellow-300 sm:w-auto">
+                        Daftar Sekarang
+                        <FaArrowRight />
+                      </button>
+                    </Link>
+
+                    <Link href="/pendidikan">
+                      <button className="w-full rounded-full border border-white/30 bg-white/10 px-8 py-4 font-black text-white backdrop-blur transition hover:-translate-y-1 hover:bg-white/20 sm:w-auto">
+                        Lihat Pendidikan
+                      </button>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="border-t-[3px] border-white/10 bg-black/20 px-4 py-3 text-[11px] font-black uppercase tracking-[0.2em] text-yellow-300 sm:px-5">
+                Closing Scene
+              </div>
             </div>
-
-            <p className="text-[10px] font-black uppercase tracking-[0.22em] text-emerald-100/80">
-              Final Scene
-            </p>
-          </div>
-
-          <FaFilm className="text-yellow-300" />
-        </div>
-
-        {/* Body */}
-        <div className="relative px-5 py-10 sm:px-8 sm:py-14 lg:px-12 lg:py-16">
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-yellow-300/10 via-transparent to-emerald-300/10" />
-
-          <div className="relative z-10">
-            <h2 className="mx-auto max-w-4xl text-[clamp(2rem,5vw,4.8rem)] font-black leading-[1.02] tracking-[-0.05em] text-white">
-              Mulai perjalanan santri melalui program yang aktif dan bermakna.
-            </h2>
-
-            <p className="mx-auto mt-6 max-w-3xl text-sm leading-relaxed text-emerald-50 sm:text-base lg:text-lg">
-              Daftarkan calon santri sekarang dan ikuti proses pendidikan yang
-              membangun ilmu, adab, keberanian, dan kemandirian.
-            </p>
-
-            <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-              <Link href="/pendaftaran">
-                <button className="inline-flex w-full items-center justify-center gap-3 rounded-full bg-yellow-400 px-8 py-4 font-black text-emerald-950 shadow-[0_12px_35px_rgba(250,204,21,0.25)] transition hover:-translate-y-1 hover:bg-yellow-300 sm:w-auto">
-                  Daftar Sekarang
-                  <FaArrowRight />
-                </button>
-              </Link>
-
-              <Link href="/pendidikan">
-                <button className="w-full rounded-full border border-white/30 bg-white/10 px-8 py-4 font-black text-white backdrop-blur transition hover:-translate-y-1 hover:bg-white/20 sm:w-auto">
-                  Lihat Pendidikan
-                </button>
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="border-t-[3px] border-white/10 bg-black/20 px-4 py-3 text-[11px] font-black uppercase tracking-[0.2em] text-yellow-300 sm:px-5">
-          Closing Scene
-        </div>
-      </div>
-    </motion.div>
-  </Container>
-</Section>
+          </motion.div>
+        </Container>
+      </Section>
 
       <Footer />
 
@@ -1310,7 +1314,8 @@ export default function Program() {
         }
 
         .story-caption {
-          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          font-family:
+            ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
             "Liberation Mono", "Courier New", monospace;
         }
       `}</style>

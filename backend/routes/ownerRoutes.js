@@ -106,7 +106,7 @@ router.get("/dashboard", async (req, res) => {
             .length,
           putri: santri.filter((item) => item.jenis_kelamin === "Perempuan")
             .length,
-          smp: santri.filter((item) => item.jenjang === "SMP").length,
+          mts: santri.filter((item) => item.jenjang === "MTS").length,
           smk: santri.filter((item) => item.jenjang === "SMK").length,
           takhassus: santri.filter((item) => item.jenjang === "Takhassus")
             .length,
@@ -319,7 +319,7 @@ router.get("/santri", async (req, res) => {
         ditolak: list.filter((item) => item.status === "ditolak").length,
         putra: list.filter((item) => item.jenis_kelamin === "Laki-laki").length,
         putri: list.filter((item) => item.jenis_kelamin === "Perempuan").length,
-        smp: list.filter((item) => item.jenjang === "SMP").length,
+        mts: list.filter((item) => item.jenjang === "MTS").length,
         smk: list.filter((item) => item.jenjang === "SMK").length,
         takhassus: list.filter((item) => item.jenjang === "Takhassus").length,
         jenjangList,
@@ -457,7 +457,7 @@ router.get("/laporan", async (req, res) => {
             .length,
           putri: santri.filter((item) => item.jenis_kelamin === "Perempuan")
             .length,
-          smp: santri.filter((item) => item.jenjang === "SMP").length,
+          mts: santri.filter((item) => item.jenjang === "MTS").length,
           smk: santri.filter((item) => item.jenjang === "SMK").length,
           takhassus: santri.filter((item) => item.jenjang === "Takhassus")
             .length,

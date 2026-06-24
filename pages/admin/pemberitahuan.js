@@ -207,7 +207,7 @@ const showErrorPopup = (title, message) => {
   });
 };
 
-  const fetchPemberitahuan = async () => {
+  async function fetchPemberitahuan() {
     try {
       setLoading(true);
 
@@ -233,7 +233,7 @@ const showErrorPopup = (title, message) => {
     }
   };
 
-  const fetchSantri = async () => {
+  async function fetchSantri() {
     try {
       const result = await fetchJson(
         `${API_URL}/api/admin/pemberitahuan/santri`,
@@ -255,7 +255,7 @@ const showErrorPopup = (title, message) => {
     }
   };
 
-  const fetchAdminNotifications = async () => {
+  async function fetchAdminNotifications() {
     try {
       setLoadingNotif(true);
 
@@ -1703,7 +1703,7 @@ function FormModal({
                 }
               >
                 <option value="">Pilih Jenjang</option>
-                <option value="SMP">SMP</option>
+                <option value="MTS">MTS</option>
                 <option value="SMK">SMK</option>
                 <option value="Takhassus">Takhassus</option>
               </select>
@@ -1719,7 +1719,7 @@ function FormModal({
               >
                 <option value="">Pilih Kelas</option>
 
-                {form.target_jenjang === "SMP" &&
+                {form.target_jenjang === "MTS" &&
                   ["7", "8", "9"].map((kelas) => (
                     <option key={kelas} value={kelas}>
                       Kelas {kelas}

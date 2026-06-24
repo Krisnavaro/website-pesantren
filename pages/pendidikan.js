@@ -56,9 +56,8 @@ const ADMIN_WHATSAPP_MESSAGE =
   "Assalamu'alaikum Admin Pesantren Al-Furqon, saya ingin bertanya mengenai pesantren.";
 
 const WHATSAPP_ADMIN_URL = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodeURIComponent(
-  ADMIN_WHATSAPP_MESSAGE
+  ADMIN_WHATSAPP_MESSAGE,
 )}`;
-
 
 /* =========================================================
    RESPONSIVE HELPER
@@ -310,7 +309,13 @@ function Reveal({ children, delay = 0, type = "up", className = "" }) {
   );
 }
 
-function SectionHeader({ badge, title, desc, light = false, align = "center" }) {
+function SectionHeader({
+  badge,
+  title,
+  desc,
+  light = false,
+  align = "center",
+}) {
   return (
     <Reveal
       className={`${
@@ -357,8 +362,8 @@ function TiltCard({ children, className = "" }) {
     const y = e.clientY - rect.top;
 
     setRotate({
-      x: ((y / rect.height) - 0.5) * -8,
-      y: ((x / rect.width) - 0.5) * 8,
+      x: (y / rect.height - 0.5) * -8,
+      y: (x / rect.width - 0.5) * 8,
     });
   };
 
@@ -466,7 +471,7 @@ function OrbitRings() {
       <motion.div
         animate={{ y: [0, -18, 0], x: [0, 16, 0] }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute right-[20%] top-[20%] flex h-16 w-16 items-center justify-center rounded-2xl bg-yellow-400 text-2xl text-emerald-950 shadow-[0_0_45px_rgba(250,204,21,0.4)]"
+        className="absolute right-[48%] top-[18%] flex h-16 w-16 items-center justify-center rounded-2xl bg-yellow-400 text-2xl text-emerald-950 shadow-[0_0_45px_rgba(250,204,21,0.4)]"
       >
         <FaCompass />
       </motion.div>
@@ -612,10 +617,18 @@ export default function Pendidikan() {
   const valuesScale = useTransform(scrollY, [550, 1500, 2300], [0.96, 1, 1.02]);
 
   const journeyY = useTransform(scrollY, [1500, 2700, 3900], [100, 0, -80]);
-  const journeyScale = useTransform(scrollY, [1500, 2700, 3900], [0.96, 1, 1.02]);
+  const journeyScale = useTransform(
+    scrollY,
+    [1500, 2700, 3900],
+    [0.96, 1, 1.02],
+  );
 
   const timelineY = useTransform(scrollY, [2800, 4200, 5400], [100, 0, -80]);
-  const timelineScale = useTransform(scrollY, [2800, 4200, 5400], [0.96, 1, 1.02]);
+  const timelineScale = useTransform(
+    scrollY,
+    [2800, 4200, 5400],
+    [0.96, 1, 1.02],
+  );
 
   const ctaY = useTransform(scrollY, [4700, 6200], [90, 0]);
 
@@ -680,7 +693,9 @@ export default function Pendidikan() {
   if (loading) return <LoadingPage />;
 
   if (maintenance || !pageData) {
-    return <MaintenancePage onRetry={fetchPendidikanData} checking={checking} />;
+    return (
+      <MaintenancePage onRetry={fetchPendidikanData} checking={checking} />
+    );
   }
 
   const { hero, stats, values, education } = pageData;
@@ -708,7 +723,7 @@ export default function Pendidikan() {
           <SafeImage
             src={hero.image}
             alt="Pendidikan Pesantren"
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover blur-[2px] opacity-75"
           />
 
           <div className="absolute inset-0 bg-gradient-to-b from-[#041b15]/95 via-[#062d22]/92 to-[#0d4f38]/70 lg:bg-gradient-to-r" />
@@ -721,7 +736,9 @@ export default function Pendidikan() {
         <Container className="flex min-h-[100dvh] items-center pt-24 sm:pt-28 lg:pt-28">
           <div className="grid w-full max-w-full items-center gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10">
             <motion.div
-              style={isDesktop ? { y: heroTextY, opacity: heroOpacity } : undefined}
+              style={
+                isDesktop ? { y: heroTextY, opacity: heroOpacity } : undefined
+              }
               initial={{ opacity: 0, y: 42 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
@@ -742,7 +759,7 @@ export default function Pendidikan() {
                 initial={{ opacity: 0, y: 34, filter: "blur(10px)" }}
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 transition={{ delay: 0.22, duration: 0.85 }}
-                className="mx-auto mt-5 max-w-5xl text-[clamp(2.25rem,12vw,7.2rem)] font-black leading-[0.95] tracking-[-0.045em] sm:leading-[0.9] lg:mx-0 lg:tracking-[-0.07em]"
+                className="mx-auto mt-5 max-w-4xl text-[clamp(2.25rem,8vw,5.5rem)] font-black leading-[1.05] tracking-[-0.03em] sm:leading-[1] lg:mx-0 lg:tracking-[-0.04em]"
               >
                 {hero.title}
                 <span className="block bg-gradient-to-r from-yellow-300 via-yellow-400 to-emerald-200 bg-clip-text text-transparent">
@@ -775,7 +792,9 @@ export default function Pendidikan() {
                   onClick={() =>
                     document
                       .getElementById("values")
-                      ?.scrollIntoView({ behavior: isDesktop ? "smooth" : "auto" })
+                      ?.scrollIntoView({
+                        behavior: isDesktop ? "smooth" : "auto",
+                      })
                   }
                 >
                   <FaPlay />

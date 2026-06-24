@@ -181,7 +181,7 @@ export default function AdminLaporan() {
     };
   };
 
-  const fetchLaporan = async () => {
+  async function fetchLaporan() {
     try {
       setLoading(true);
 
@@ -629,7 +629,7 @@ if (checking) {
                       label="Santri Ditolak"
                       value={laporan.santri.ditolak}
                     />
-                    <InfoRow label="SMP" value={laporan.santri.smp} />
+                    <InfoRow label="MTS" value={laporan.santri.mts} />
                     <InfoRow label="SMK" value={laporan.santri.smk} />
                     <InfoRow
                       label="Takhassus"

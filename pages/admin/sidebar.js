@@ -20,6 +20,7 @@ import {
   FaUserShield,
   FaGem,
   FaChartBar,
+  FaGraduationCap,
 } from "react-icons/fa";
 
 export default function SidebarAdmin({
@@ -70,6 +71,12 @@ export default function SidebarAdmin({
         href: "/admin/pemberitahuan",
         icon: <FaBullhorn />,
         desc: "Informasi santri",
+      },
+      {
+        name: "Jurusan SMK",
+        href: "/admin/jurusan",
+        icon: <FaGraduationCap />,
+        desc: "Manajemen jurusan",
       },
     ],
     []

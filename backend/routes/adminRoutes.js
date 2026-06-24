@@ -1,3 +1,10 @@
+/**
+ * @file adminRoutes.js
+ * @description Berisi routing dan logika untuk panel Admin. Endpoint di sini bertugas mengelola
+ * data master (santri, guru), verifikasi tagihan dan pembayaran, pengumuman/pemberitahuan, 
+ * serta fungsi analitik dashboard admin.
+ * @module routes/adminRoutes
+ */
 import express from "express";
 import { supabase } from "../config/supabase.js";
 import upload from "../middleware/upload.js";
@@ -6,6 +13,12 @@ import {
   uploadToStorage,
   logAktivitasAdmin,
 } from "../helpers/helpers.js";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const router = express.Router();
 
@@ -319,9 +332,78 @@ router.post("/santri", upload.single("foto"), async (req, res) => {
       },
     });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(501).json({
       success: false,
       message: "Terjadi kesalahan server saat membuat santri.",
+      error: error.message,
+    });
+  }
+});
+
+router.put("/santri/bulk-promote", async (req, res) => {
+  try {
+    const { jenjang, fromKelas, toKelas, admin_id, nama_admin } = req.body;
+
+    if (!jenjang || !fromKelas || !toKelas) {
+      return res.status(400).json({
+        success: false,
+        message: "Jenjang, Kelas Lama, dan Kelas Baru wajib diisi.",
+      });
+    }
+
+    const { data: santriToUpdate, error: findError } = await supabase
+      .from("santri")
+      .select("id, nama")
+      .eq("jenjang", jenjang)
+      .eq("kelas", fromKelas)
+      .eq("status", "aktif");
+
+    if (findError) {
+      return res.status(400).json({
+        success: false,
+        message: "Gagal mencari data santri untuk dinaikkan kelasnya.",
+        error: findError.message,
+      });
+    }
+
+    if (!santriToUpdate || santriToUpdate.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: `Tidak ada santri aktif di jenjang ${jenjang} kelas ${fromKelas}.`,
+      });
+    }
+
+    const { error: updateError } = await supabase
+      .from("santri")
+      .update({ kelas: toKelas })
+      .eq("jenjang", jenjang)
+      .eq("kelas", fromKelas)
+      .eq("status", "aktif");
+
+    if (updateError) {
+      return res.status(400).json({
+        success: false,
+        message: "Gagal memproses kenaikan kelas massal.",
+        error: updateError.message,
+      });
+    }
+
+    await logAktivitasAdmin({
+      admin_id,
+      nama_admin: nama_admin || "Admin Pesantren",
+      kategori: "santri",
+      aktivitas: "Kenaikan Kelas Massal",
+      detail: `Admin menaikkan ${santriToUpdate.length} santri jenjang ${jenjang} dari kelas ${fromKelas} menjadi kelas ${toKelas}.`,
+    });
+
+    return res.json({
+      success: true,
+      message: `Berhasil menaikkan kelas ${santriToUpdate.length} santri.`,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Terjadi kesalahan server saat memproses kenaikan kelas.",
       error: error.message,
     });
   }
@@ -954,19 +1036,50 @@ router.put("/pembayaran/:id/verify", async (req, res) => {
     }
 
     if (tagihan_id) {
+      const { data: semuaPembayaran } = await supabase
+        .from("pembayaran")
+        .select("nominal")
+        .eq("tagihan_id", tagihan_id)
+        .eq("status", "lunas");
+
+      const totalTerbayar = (semuaPembayaran || []).reduce(
+        (sum, item) => sum + Number(item.nominal || 0),
+        0
+      );
+
+      const { data: tagihanItem } = await supabase
+        .from("tagihan")
+        .select("nominal")
+        .eq("id", tagihan_id)
+        .single();
+
+      const tagihanNominal = Number(tagihanItem?.nominal || 0);
+      let newTagihanStatus = "lunas";
+
+      if (totalTerbayar < tagihanNominal) {
+        newTagihanStatus = "cicilan";
+      }
+
       const { error: tagihanError } = await supabase
         .from("tagihan")
         .update({
-          status: "lunas",
+          status: newTagihanStatus,
         })
         .eq("id", tagihan_id);
 
       if (tagihanError) {
-        return res.status(400).json({
-          success: false,
-          message: "Pembayaran lunas, tetapi update tagihan gagal.",
-          error: tagihanError.message,
-        });
+        if (tagihanError.message.includes("tagihan_status_check")) {
+            await supabase
+              .from("tagihan")
+              .update({ status: "pending" })
+              .eq("id", tagihan_id);
+        } else {
+            return res.status(400).json({
+              success: false,
+              message: "Pembayaran lunas, tetapi update tagihan gagal.",
+              error: tagihanError.message,
+            });
+        }
       }
     }
 
@@ -1435,7 +1548,7 @@ router.get("/laporan", async (req, res) => {
     const santriPending = santri.filter((s) => s.status === "pending").length;
     const santriDitolak = santri.filter((s) => s.status === "ditolak").length;
 
-    const santriSMP = santri.filter((s) => s.jenjang === "SMP").length;
+    const santriMTS = santri.filter((s) => s.jenjang === "MTS").length;
     const santriSMK = santri.filter((s) => s.jenjang === "SMK").length;
     const santriTakhassus = santri.filter(
       (s) => s.jenjang === "Takhassus"
@@ -1532,7 +1645,7 @@ router.get("/laporan", async (req, res) => {
           aktif: santriAktif,
           pending: santriPending,
           ditolak: santriDitolak,
-          smp: santriSMP,
+          mts: santriMTS,
           smk: santriSMK,
           takhassus: santriTakhassus,
         },
@@ -1561,6 +1674,234 @@ router.get("/laporan", async (req, res) => {
       message: "Terjadi kesalahan server saat mengambil laporan.",
       error: error.message,
     });
+  }
+});
+
+/* =========================================================
+   ADMIN MANUAL PAYMENT
+   POST /api/admin/pembayaran/manual
+========================================================= */
+router.post("/pembayaran/manual", async (req, res) => {
+  try {
+    const { santri_id, tagihan_id, nominal_dibayar, metode, admin_id, nama_admin } = req.body;
+
+    if (!santri_id || !tagihan_id || !nominal_dibayar || !metode) {
+      return res.status(400).json({
+        success: false,
+        message: "Data santri, tagihan, nominal, dan metode wajib diisi.",
+      });
+    }
+
+    if (Number(nominal_dibayar) <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Nominal pembayaran harus lebih dari 0.",
+      });
+    }
+
+    const { data: tagihan, error: tagihanError } = await supabase
+      .from("tagihan")
+      .select("*")
+      .eq("id", tagihan_id)
+      .single();
+
+    if (tagihanError || !tagihan) {
+      return res.status(404).json({
+        success: false,
+        message: "Data tagihan tidak ditemukan.",
+      });
+    }
+
+    const { data: existingPembayaran } = await supabase
+      .from("pembayaran")
+      .select("*")
+      .eq("tagihan_id", tagihan_id)
+      .eq("santri_id", santri_id)
+      .in("status", ["belum_bayar", "ditolak"])
+      .order("created_at", { ascending: false })
+      .limit(1);
+
+    let pembayaranData;
+    let pembayaranError;
+
+    if (existingPembayaran && existingPembayaran.length > 0) {
+      const existing = existingPembayaran[0];
+      const sisaNominal = existing.nominal - Number(nominal_dibayar);
+
+      const { data, error } = await supabase
+        .from("pembayaran")
+        .update({
+          nominal: Number(nominal_dibayar),
+          status: "lunas",
+          metode,
+          tanggal_bayar: new Date().toISOString(),
+        })
+        .eq("id", existing.id)
+        .select()
+        .single();
+
+      pembayaranData = data;
+      pembayaranError = error;
+
+      if (!pembayaranError && sisaNominal > 0) {
+        await supabase.from("pembayaran").insert({
+          santri_id,
+          tagihan_id,
+          jenis: tagihan.jenis,
+          nominal: sisaNominal,
+          status: "belum_bayar",
+          deadline: tagihan.deadline,
+        });
+      }
+    } else {
+      const { data, error } = await supabase
+        .from("pembayaran")
+        .insert([{
+          santri_id,
+          tagihan_id,
+          jenis: tagihan.jenis,
+          nominal: Number(nominal_dibayar),
+          status: "lunas",
+          metode,
+          deadline: tagihan.deadline,
+          tanggal_bayar: new Date().toISOString(),
+        }])
+        .select()
+        .single();
+        
+      pembayaranData = data;
+      pembayaranError = error;
+    }
+
+    if (pembayaranError) {
+      let errorMessage = "Gagal mencatat pembayaran manual.";
+      if (pembayaranError.message.includes("pembayaran_status_check")) {
+        errorMessage = "Gagal mencatat pembayaran karena batasan status database belum diupdate.";
+      }
+      return res.status(400).json({
+        success: false,
+        message: errorMessage,
+        error: pembayaranError.message,
+      });
+    }
+
+    // Hitung total terbayar
+    const { data: semuaPembayaran } = await supabase
+      .from("pembayaran")
+      .select("nominal")
+      .eq("tagihan_id", tagihan_id)
+      .eq("status", "lunas");
+
+    const totalTerbayar = (semuaPembayaran || []).reduce(
+      (sum, item) => sum + Number(item.nominal || 0),
+      0
+    );
+
+    let newTagihanStatus = "lunas";
+    if (totalTerbayar < Number(tagihan.nominal)) {
+      newTagihanStatus = "cicilan";
+    }
+
+    const { error: updateTagihanError } = await supabase
+      .from("tagihan")
+      .update({ status: newTagihanStatus, metode, tanggal_bayar: new Date().toISOString() })
+      .eq("id", tagihan_id);
+
+    if (updateTagihanError && updateTagihanError.message.includes("tagihan_status_check")) {
+        await supabase
+          .from("tagihan")
+          .update({ status: "pending", metode, tanggal_bayar: new Date().toISOString() })
+          .eq("id", tagihan_id);
+    }
+
+    await logAktivitasAdmin({
+      admin_id,
+      nama_admin: nama_admin || "Admin Pesantren",
+      kategori: "pembayaran",
+      aktivitas: "Mencatat pembayaran manual",
+      detail: `Admin mencatat pembayaran manual sebesar Rp ${Number(nominal_dibayar).toLocaleString("id-ID")} untuk tagihan ${tagihan.jenis}.`,
+      target_id: santri_id,
+      target_nama: "",
+    });
+
+    return res.json({
+      success: true,
+      message: "Pembayaran manual berhasil dicatat.",
+      data: pembayaranData,
+    });
+  } catch (error) {
+    console.error("MANUAL PAYMENT ERROR:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Terjadi kesalahan server saat mencatat pembayaran.",
+      error: error.message,
+    });
+  }
+});
+
+/* =========================================================
+   MANAJEMEN JURUSAN SMK
+========================================================= */
+
+router.post("/jurusan", async (req, res) => {
+  try {
+    const { nama_jurusan } = req.body;
+
+    if (!nama_jurusan) {
+      return res.status(400).json({ success: false, message: "Nama jurusan harus diisi." });
+    }
+
+    const jurusanPath = path.join(__dirname, "../data/jurusan.json");
+    let jurusanList = [];
+    if (fs.existsSync(jurusanPath)) {
+      jurusanList = JSON.parse(fs.readFileSync(jurusanPath, "utf8"));
+    }
+
+    if (jurusanList.find(j => j.nama_jurusan.toLowerCase() === nama_jurusan.toLowerCase())) {
+      return res.status(400).json({ success: false, message: "Jurusan tersebut sudah ada." });
+    }
+
+    const newId = (jurusanList.length > 0 ? Math.max(...jurusanList.map(j => parseInt(j.id) || 0)) + 1 : 1).toString();
+    const newJurusan = { id: newId, nama_jurusan };
+    jurusanList.push(newJurusan);
+
+    fs.writeFileSync(jurusanPath, JSON.stringify(jurusanList, null, 2));
+
+    res.json({
+      success: true,
+      message: "Jurusan berhasil ditambahkan.",
+      data: newJurusan,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+router.delete("/jurusan/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const jurusanPath = path.join(__dirname, "../data/jurusan.json");
+    if (!fs.existsSync(jurusanPath)) {
+      return res.status(404).json({ success: false, message: "Data tidak ditemukan." });
+    }
+
+    let jurusanList = JSON.parse(fs.readFileSync(jurusanPath, "utf8"));
+    const initialLength = jurusanList.length;
+    jurusanList = jurusanList.filter(j => j.id !== id && j.id !== parseInt(id));
+
+    if (jurusanList.length === initialLength) {
+      return res.status(404).json({ success: false, message: "Jurusan tidak ditemukan." });
+    }
+
+    fs.writeFileSync(jurusanPath, JSON.stringify(jurusanList, null, 2));
+
+    res.json({
+      success: true,
+      message: "Jurusan berhasil dihapus.",
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 

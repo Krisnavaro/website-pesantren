@@ -56,7 +56,7 @@ const ADMIN_WHATSAPP_MESSAGE =
   "Assalamu'alaikum Admin Pesantren Al-Furqon, saya ingin bertanya mengenai pesantren.";
 
 const WHATSAPP_ADMIN_URL = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodeURIComponent(
-  ADMIN_WHATSAPP_MESSAGE
+  ADMIN_WHATSAPP_MESSAGE,
 )}`;
 
 /* =========================================================
@@ -311,7 +311,13 @@ function Reveal({ children, delay = 0, type = "up", className = "" }) {
   );
 }
 
-function SectionHeader({ badge, title, desc, light = false, align = "center" }) {
+function SectionHeader({
+  badge,
+  title,
+  desc,
+  light = false,
+  align = "center",
+}) {
   return (
     <Reveal
       className={`${
@@ -357,8 +363,8 @@ function TiltCard({ children, className = "" }) {
     const y = e.clientY - rect.top;
 
     setRotate({
-      x: ((y / rect.height) - 0.5) * -8,
-      y: ((x / rect.width) - 0.5) * 8,
+      x: (y / rect.height - 0.5) * -8,
+      y: (x / rect.width - 0.5) * 8,
     });
   };
 
@@ -472,7 +478,7 @@ function OrbitRings() {
       <motion.div
         animate={{ y: [0, -18, 0], x: [0, 16, 0] }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute right-[20%] top-[20%] flex h-16 w-16 items-center justify-center rounded-2xl bg-yellow-400 text-2xl text-emerald-950 shadow-[0_0_45px_rgba(250,204,21,0.4)]"
+        className="absolute right-[48%] top-[18%] flex h-16 w-16 items-center justify-center rounded-2xl bg-yellow-400 text-2xl text-emerald-950 shadow-[0_0_45px_rgba(250,204,21,0.4)]"
       >
         <FaCompass />
       </motion.div>
@@ -614,13 +620,25 @@ export default function Fasilitas() {
   const heroOpacity = useTransform(scrollY, [0, 900], [1, 0.35]);
 
   const featuredY = useTransform(scrollY, [600, 1600, 2600], [100, 0, -80]);
-  const featuredScale = useTransform(scrollY, [600, 1600, 2600], [0.96, 1, 1.02]);
+  const featuredScale = useTransform(
+    scrollY,
+    [600, 1600, 2600],
+    [0.96, 1, 1.02],
+  );
 
   const explorerY = useTransform(scrollY, [1700, 3100, 4300], [100, 0, -80]);
-  const explorerScale = useTransform(scrollY, [1700, 3100, 4300], [0.96, 1, 1.02]);
+  const explorerScale = useTransform(
+    scrollY,
+    [1700, 3100, 4300],
+    [0.96, 1, 1.02],
+  );
 
   const cinematicY = useTransform(scrollY, [3200, 4600, 5900], [100, 0, -80]);
-  const cinematicScale = useTransform(scrollY, [3200, 4600, 5900], [0.96, 1, 1.02]);
+  const cinematicScale = useTransform(
+    scrollY,
+    [3200, 4600, 5900],
+    [0.96, 1, 1.02],
+  );
 
   const ctaY = useTransform(scrollY, [5200, 6800], [90, 0]);
 
@@ -674,15 +692,17 @@ export default function Fasilitas() {
   const { hero, stats, featuredInfo, featuredCards, qualities, facilities } =
     pageData;
 
-  const categories = ["Semua", ...new Set(facilities.map((item) => item.category))];
+  const categories = [
+    "Semua",
+    ...new Set(facilities.map((item) => item.category)),
+  ];
 
   const filteredFacilities =
     selectedCategory === "Semua"
       ? facilities
       : facilities.filter((item) => item.category === selectedCategory);
 
-  const featured =
-    facilities.find((item) => item.featured) || facilities[0];
+  const featured = facilities.find((item) => item.featured) || facilities[0];
 
   const activeFacility =
     filteredFacilities[activeIndex] || filteredFacilities[0] || facilities[0];
@@ -733,7 +753,7 @@ export default function Fasilitas() {
           <SafeImage
             src={hero.image}
             alt="Fasilitas Pesantren"
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover blur-[2px] opacity-75"
           />
 
           <div className="absolute inset-0 bg-gradient-to-b from-[#041b15]/95 via-[#062d22]/92 to-[#0d4f38]/70 lg:bg-gradient-to-r" />
@@ -747,9 +767,7 @@ export default function Fasilitas() {
           <div className="grid w-full max-w-full items-center gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10">
             <motion.div
               style={
-                isDesktop
-                  ? { y: heroTextY, opacity: heroOpacity }
-                  : undefined
+                isDesktop ? { y: heroTextY, opacity: heroOpacity } : undefined
               }
               initial={{ opacity: 0, y: 42 }}
               animate={{ opacity: 1, y: 0 }}
@@ -771,7 +789,7 @@ export default function Fasilitas() {
                 initial={{ opacity: 0, y: 34, filter: "blur(10px)" }}
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 transition={{ delay: 0.22, duration: 0.85 }}
-                className="mx-auto mt-5 max-w-5xl text-[clamp(2.25rem,12vw,7.2rem)] font-black leading-[0.95] tracking-[-0.045em] sm:leading-[0.9] lg:mx-0 lg:tracking-[-0.07em]"
+                className="mx-auto mt-5 max-w-4xl text-[clamp(2.25rem,8vw,5.5rem)] font-black leading-[1.05] tracking-[-0.03em] sm:leading-[1] lg:mx-0 lg:tracking-[-0.04em]"
               >
                 {hero.title}
                 <span className="block bg-gradient-to-r from-yellow-300 via-yellow-400 to-emerald-200 bg-clip-text text-transparent">
@@ -1064,75 +1082,77 @@ export default function Fasilitas() {
                 ))}
               </div>
 
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeFacility?.id || activeFacility?.name}
-                  initial={{ opacity: 0, y: 34, scale: 0.97 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -34, scale: 0.97 }}
-                  transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
-                  className="overflow-hidden rounded-[1.8rem] bg-emerald-950 shadow-2xl sm:rounded-[2.2rem]"
-                >
-                  <div className="relative h-[300px] overflow-hidden sm:h-[420px] lg:h-[54svh]">
-                    <motion.div
-                      initial={{ scale: 1.05 }}
-                      animate={{ scale: 1 }}
-                      transition={{ duration: 0.75 }}
-                      className="h-full w-full"
-                    >
-                      <SafeImage
-                        src={activeFacility?.img}
-                        alt={activeFacility?.name}
-                        className="h-full w-full object-cover"
-                      />
-                    </motion.div>
+              <div className="lg:sticky lg:top-32 lg:self-start">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeFacility?.id || activeFacility?.name}
+                    initial={{ opacity: 0, y: 34, scale: 0.97 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -34, scale: 0.97 }}
+                    transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
+                    className="overflow-hidden rounded-[1.8rem] bg-emerald-950 shadow-2xl sm:rounded-[2.2rem] w-full"
+                  >
+                    <div className="relative h-[300px] overflow-hidden sm:h-[420px] lg:h-[54svh]">
+                      <motion.div
+                        initial={{ scale: 1.05 }}
+                        animate={{ scale: 1 }}
+                        transition={{ duration: 0.75 }}
+                        className="h-full w-full"
+                      >
+                        <SafeImage
+                          src={activeFacility?.img}
+                          alt={activeFacility?.name}
+                          className="h-full w-full object-cover"
+                        />
+                      </motion.div>
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-emerald-950 via-emerald-950/25 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-emerald-950 via-emerald-950/25 to-transparent" />
 
-                    <div className="absolute bottom-0 left-0 p-5 sm:p-6">
-                      <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400 text-2xl text-emerald-950">
-                        {getIcon(activeFacility?.iconKey)}
+                      <div className="absolute bottom-0 left-0 p-5 sm:p-6">
+                        <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400 text-2xl text-emerald-950">
+                          {getIcon(activeFacility?.iconKey)}
+                        </div>
+
+                        <p className="text-xs font-black uppercase tracking-[0.26em] text-yellow-300 sm:tracking-[0.3em]">
+                          {activeFacility?.category}
+                        </p>
+
+                        <h3 className="mt-2 text-[clamp(2rem,9vw,5rem)] font-black tracking-[-0.045em] text-white lg:tracking-[-0.06em]">
+                          {activeFacility?.name}
+                        </h3>
+                      </div>
+                    </div>
+
+                    <div className="grid gap-5 p-5 md:grid-cols-[1.1fr_0.9fr] sm:p-6 lg:p-8">
+                      <div>
+                        <p className="text-sm leading-relaxed text-emerald-100 sm:text-base">
+                          {activeFacility?.detail || activeFacility?.desc}
+                        </p>
+
+                        <button className="mt-5 inline-flex w-full items-center justify-center gap-3 rounded-full bg-yellow-400 px-6 py-3 font-black text-emerald-950 transition hover:bg-yellow-300 sm:w-auto">
+                          Lihat Detail
+                          <FaArrowRight />
+                        </button>
                       </div>
 
-                      <p className="text-xs font-black uppercase tracking-[0.26em] text-yellow-300 sm:tracking-[0.3em]">
-                        {activeFacility?.category}
-                      </p>
+                      <div className="grid grid-cols-2 gap-3">
+                        {qualities.map((point) => (
+                          <div
+                            key={point}
+                            className="rounded-2xl border border-white/10 bg-white/10 p-3 text-center backdrop-blur"
+                          >
+                            <FaCheckCircle className="mx-auto mb-2 text-yellow-300" />
 
-                      <h3 className="mt-2 text-[clamp(2rem,9vw,5rem)] font-black tracking-[-0.045em] text-white lg:tracking-[-0.06em]">
-                        {activeFacility?.name}
-                      </h3>
+                            <p className="text-xs font-bold text-white sm:text-sm">
+                              {point}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-
-                  <div className="grid gap-5 p-5 md:grid-cols-[1.1fr_0.9fr] sm:p-6 lg:p-8">
-                    <div>
-                      <p className="text-sm leading-relaxed text-emerald-100 sm:text-base">
-                        {activeFacility?.detail || activeFacility?.desc}
-                      </p>
-
-                      <button className="mt-5 inline-flex w-full items-center justify-center gap-3 rounded-full bg-yellow-400 px-6 py-3 font-black text-emerald-950 transition hover:bg-yellow-300 sm:w-auto">
-                        Lihat Detail
-                        <FaArrowRight />
-                      </button>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3">
-                      {qualities.map((point) => (
-                        <div
-                          key={point}
-                          className="rounded-2xl border border-white/10 bg-white/10 p-3 text-center backdrop-blur"
-                        >
-                          <FaCheckCircle className="mx-auto mb-2 text-yellow-300" />
-
-                          <p className="text-xs font-bold text-white sm:text-sm">
-                            {point}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </motion.div>
-              </AnimatePresence>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
             </div>
           </div>
         </Container>
@@ -1329,10 +1349,10 @@ export default function Fasilitas() {
                     <FaArrowRight />
                   </MagneticButton>
 
-<MagneticButton href={WHATSAPP_ADMIN_URL} variant="secondary">
-  Hubungi Admin
-  <FaHandSparkles />
-</MagneticButton>
+                  <MagneticButton href={WHATSAPP_ADMIN_URL} variant="secondary">
+                    Hubungi Admin
+                    <FaHandSparkles />
+                  </MagneticButton>
                 </div>
               </div>
 

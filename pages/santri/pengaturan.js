@@ -167,7 +167,7 @@ export default function PengaturanSantri() {
     }, 3500);
   };
 
-  const loadLocalSettings = () => {
+  function loadLocalSettings() {
     try {
       const saved = localStorage.getItem("santri_settings");
 
@@ -194,7 +194,7 @@ export default function PengaturanSantri() {
     showToast("success", "Pengaturan tampilan berhasil disimpan.");
   };
 
-  const fetchData = async () => {
+  async function fetchData() {
     try {
       setLoading(true);
 

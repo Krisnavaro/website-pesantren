@@ -615,7 +615,7 @@ if (checking) {
                     />
                     <InfoRow label="Putra" value={laporan.santri.putra} />
                     <InfoRow label="Putri" value={laporan.santri.putri} />
-                    <InfoRow label="SMP" value={laporan.santri.smp} />
+                    <InfoRow label="MTS" value={laporan.santri.mts} />
                     <InfoRow label="SMK" value={laporan.santri.smk} />
                     <InfoRow
                       label="Takhassus"

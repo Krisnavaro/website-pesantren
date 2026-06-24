@@ -61,7 +61,7 @@ export default function SidebarSantri({
     }
   }, [santri?.id, pathname]);
 
-  const fetchUnreadCount = async (santriData) => {
+  async function fetchUnreadCount(santriData) {
     const { data: pemberitahuanData, error: pemberitahuanError } =
       await supabase
         .from("pemberitahuan")

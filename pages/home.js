@@ -49,15 +49,14 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
    0812-3456-7890 menjadi 6281234567890
 ========================================================= */
 
-const ADMIN_WHATSAPP_NUMBER = "6283899601027";
+const ADMIN_WHATSAPP_NUMBER = "628999155698";
 
 const ADMIN_WHATSAPP_MESSAGE =
   "Assalamu'alaikum Admin Pesantren Al-Furqon, saya ingin bertanya mengenai pesantren.";
 
 const WHATSAPP_ADMIN_URL = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodeURIComponent(
-  ADMIN_WHATSAPP_MESSAGE
+  ADMIN_WHATSAPP_MESSAGE,
 )}`;
-
 
 function getIcon(key) {
   const icons = {
@@ -77,7 +76,12 @@ function getIcon(key) {
   return icons[key] || <FaStar />;
 }
 
-function SafeImage({ src, alt, className = "", fallback = "/hero-santri.jpg" }) {
+function SafeImage({
+  src,
+  alt,
+  className = "",
+  fallback = "/hero-santri.jpg",
+}) {
   const [currentSrc, setCurrentSrc] = useState(src || fallback);
 
   useEffect(() => {
@@ -426,7 +430,13 @@ function Reveal({ children, delay = 0, className = "", type = "up" }) {
   );
 }
 
-function SectionHeader({ badge, title, desc, light = false, align = "center" }) {
+function SectionHeader({
+  badge,
+  title,
+  desc,
+  light = false,
+  align = "center",
+}) {
   return (
     <Reveal
       className={`${
@@ -472,8 +482,8 @@ function TiltCard({ children, className = "" }) {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    const rotateX = ((y / rect.height) - 0.5) * -8;
-    const rotateY = ((x / rect.width) - 0.5) * 8;
+    const rotateX = (y / rect.height - 0.5) * -8;
+    const rotateY = (x / rect.width - 0.5) * 8;
 
     setRotate({
       x: rotateX,
@@ -620,23 +630,23 @@ function FloatingVerse() {
 function MaintenancePage({ onRetry, checking }) {
   return (
     <main className="relative min-h-[100svh] overflow-hidden bg-[#041b15] text-white">
-<div className="absolute inset-0">
-  <ParallaxBlock
-    range={[0, 1000]}
-    y={[-30, 30]}
-    scale={[1.08, 1.02]}
-    className="h-full w-full"
-  >
-    <SafeImage
-      src="/hero-santri.jpg"
-      alt="Maintenance Al-Furqon"
-      className="h-full w-full object-cover"
-    />
-  </ParallaxBlock>
+      <div className="absolute inset-0">
+        <ParallaxBlock
+          range={[0, 1000]}
+          y={[-30, 30]}
+          scale={[1.08, 1.02]}
+          className="h-full w-full"
+        >
+          <SafeImage
+            src="/hero-santri.jpg"
+            alt="Maintenance Al-Furqon"
+            className="h-full w-full object-cover"
+          />
+        </ParallaxBlock>
 
-  <div className="absolute inset-0 bg-gradient-to-r from-[#041b15] via-[#062d22]/95 to-[#041b15]" />
-  <div className="absolute inset-0 bg-black/65" />
-</div>
+        <div className="absolute inset-0 bg-gradient-to-r from-[#041b15] via-[#062d22]/95 to-[#041b15]" />
+        <div className="absolute inset-0 bg-black/65" />
+      </div>
       <IslamicBackground dark intense />
 
       <motion.div
@@ -706,9 +716,10 @@ function MaintenancePage({ onRetry, checking }) {
           </h1>
 
           <p className="mx-auto mt-6 max-w-3xl text-sm leading-relaxed text-emerald-100 sm:text-base lg:text-xl">
-  Assalamu’alaikum, Santri Al-Furqon. Informasi pondok sedang dipersiapkan
-  oleh sistem. Silakan tunggu sebentar atau coba kembali beberapa saat lagi.
-</p>
+            Assalamu’alaikum, Santri Al-Furqon. Informasi pondok sedang
+            dipersiapkan oleh sistem. Silakan tunggu sebentar atau coba kembali
+            beberapa saat lagi.
+          </p>
         </motion.div>
 
         <motion.div
@@ -736,13 +747,13 @@ function MaintenancePage({ onRetry, checking }) {
           </button>
 
           <a
-  href="https://wa.me/628999155698?text=Assalamu%27alaikum%20Admin%20Al-Furqon%2C%20saya%20ingin%20bertanya%20mengenai%20informasi%20Pondok%20Pesantren%20Al-Furqon."
-  target="_blank"
-  rel="noopener noreferrer"
-  className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-8 py-4 font-black text-white backdrop-blur transition hover:-translate-y-1 hover:bg-white/20"
->
-  Hubungi Admin
-</a>
+            href="https://wa.me/628999155698?text=Assalamu%27alaikum%20Admin%20Al-Furqon%2C%20saya%20ingin%20bertanya%20mengenai%20informasi%20Pondok%20Pesantren%20Al-Furqon."
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-8 py-4 font-black text-white backdrop-blur transition hover:-translate-y-1 hover:bg-white/20"
+          >
+            Hubungi Admin
+          </a>
         </motion.div>
 
         <motion.div
@@ -752,19 +763,19 @@ function MaintenancePage({ onRetry, checking }) {
           className="mt-10 grid w-full max-w-3xl gap-3 text-left sm:grid-cols-3"
         >
           {[
-  {
-    title: "Website Sedang Diperbarui",
-    code: "Kami sedang meningkatkan layanan website agar lebih nyaman digunakan.",
-  },
-  {
-    title: "Akses Akan Segera Dibuka",
-    code: "Silakan coba kembali beberapa saat lagi.",
-  },
-  {
-    title: "Butuh Bantuan?",
-    code: "Hubungi admin pesantren melalui WhatsApp jika ada keperluan penting.",
-  },
-].map((item) => (
+            {
+              title: "Website Sedang Diperbarui",
+              code: "Kami sedang meningkatkan layanan website agar lebih nyaman digunakan.",
+            },
+            {
+              title: "Akses Akan Segera Dibuka",
+              code: "Silakan coba kembali beberapa saat lagi.",
+            },
+            {
+              title: "Butuh Bantuan?",
+              code: "Hubungi admin pesantren melalui WhatsApp jika ada keperluan penting.",
+            },
+          ].map((item) => (
             <div
               key={item.title}
               className="rounded-3xl border border-white/10 bg-white/10 p-4 backdrop-blur-xl"
@@ -832,32 +843,32 @@ export default function Home() {
 
   const [activePembina, setActivePembina] = useState(0);
 
-const { scrollY } = useScroll();
+  const { scrollY } = useScroll();
 
-const heroImageScale = useTransform(scrollY, [0, 900], [1, 1.28]);
-const heroTextY = useTransform(scrollY, [0, 900], [0, 180]);
-const heroOverlayOpacity = useTransform(scrollY, [0, 900], [0.38, 0.9]);
+  const heroImageScale = useTransform(scrollY, [0, 900], [1, 1.28]);
+  const heroTextY = useTransform(scrollY, [0, 900], [0, 180]);
+  const heroOverlayOpacity = useTransform(scrollY, [0, 900], [0.38, 0.9]);
 
-const valuesScene = {
-  y: useTransform(scrollY, [500, 1200, 1900], [160, 0, -120]),
-  scale: useTransform(scrollY, [500, 1200, 1900], [0.94, 1, 1.04]),
-  opacity: useTransform(scrollY, [500, 850, 1850], [0.35, 1, 0.8]),
-};
+  const valuesScene = {
+    y: useTransform(scrollY, [500, 1200, 1900], [160, 0, -120]),
+    scale: useTransform(scrollY, [500, 1200, 1900], [0.94, 1, 1.04]),
+    opacity: useTransform(scrollY, [500, 850, 1850], [0.35, 1, 0.8]),
+  };
 
-const programScene = {
-  y: useTransform(scrollY, [2500, 3500, 4500], [160, 0, -130]),
-  scale: useTransform(scrollY, [2500, 3500, 4500], [0.94, 1, 1.03]),
-};
+  const programScene = {
+    y: useTransform(scrollY, [2500, 3500, 4500], [160, 0, -130]),
+    scale: useTransform(scrollY, [2500, 3500, 4500], [0.94, 1, 1.03]),
+  };
 
-const pembinaScene = {
-  y: useTransform(scrollY, [3600, 4700, 5700], [180, 0, -150]),
-  scale: useTransform(scrollY, [3600, 4700, 5700], [0.93, 1, 1.04]),
-};
+  const pembinaScene = {
+    y: useTransform(scrollY, [3600, 4700, 5700], [180, 0, -150]),
+    scale: useTransform(scrollY, [3600, 4700, 5700], [0.93, 1, 1.04]),
+  };
 
-const ctaScene = {
-  y: useTransform(scrollY, [5000, 6100], [160, 0]),
-  scale: useTransform(scrollY, [5000, 6100], [0.92, 1]),
-};
+  const ctaScene = {
+    y: useTransform(scrollY, [5000, 6100], [160, 0]),
+    scale: useTransform(scrollY, [5000, 6100], [0.92, 1]),
+  };
 
   const fetchHomeData = async () => {
     try {
@@ -937,7 +948,10 @@ const ctaScene = {
       {/* HERO */}
       <Section id="hero" dark scene={0} label="Awal">
         <div className="absolute inset-0">
-          <motion.div style={{ scale: heroImageScale }} className="h-full w-full">
+          <motion.div
+            style={{ scale: heroImageScale }}
+            className="h-full w-full"
+          >
             <SafeImage
               src={hero.image}
               alt="Pondok Pesantren Al-Furqon"
@@ -1110,87 +1124,198 @@ const ctaScene = {
       </Section>
 
       {/* PROFIL PESANTREN */}
-<Section
-  id="profil"
-  scene={1}
-  label="Profil"
-  className="bg-[#f7f1df]"
->
-  <Container>
-    <SectionHeader
-      badge="Profil Pesantren"
-      title="Pendahuluan, Landasan, Visi & Misi"
-      desc="Mengenal Pondok Pesantren Al Qur'an Al Furqon lebih dekat."
-    />
-
-    {/* Pendahuluan */}
-    <div className="mt-10 rounded-[2rem] bg-white p-8 shadow-xl">
-      <h3 className="text-3xl font-black text-emerald-950 mb-4">
-        Pendahuluan
-      </h3>
-
-      <p className="leading-relaxed text-slate-700">
-        {homeData.profil?.pendahuluan}
-      </p>
-    </div>
-
-    <div className="mt-6 rounded-[2rem] bg-white p-8 shadow-xl">
-      <h3 className="text-3xl font-black text-emerald-950 mb-4">
-        Landasan
-      </h3>
-
-      <p className="leading-relaxed text-slate-700 whitespace-pre-line">
-        {homeData.profil?.landasan}
-      </p>
-    </div>
-
-    <div className="mt-6 grid gap-6 lg:grid-cols-2">
-      <div className="rounded-[2rem] bg-white p-8 shadow-xl">
-        <h3 className="text-3xl font-black text-emerald-950 mb-4">
-          Visi
-        </h3>
-
-        <p className="text-slate-700">
-          {homeData.profil?.visi}
-        </p>
-      </div>
-
-      <div className="rounded-[2rem] bg-white p-8 shadow-xl">
-        <h3 className="text-3xl font-black text-emerald-950 mb-4">
-          Misi
-        </h3>
-
-        <ul className="space-y-3 text-slate-700">
-          {homeData.profil?.misi?.map((item, index) => (
-            <li key={index}>
-              {index + 1}. {item}
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
-  </Container>
-</Section>
-
-      {/* VALUES */}
-<Section
-  id="values"
-  scene={2}
-  label="Nilai"
-  className="bg-gradient-to-br from-[#f7f1df] via-white to-emerald-50"
->
-        <IslamicBackground />
-        <Container
-  style={valuesScene}
-  className="flex min-h-[100svh] flex-col justify-center"
->
+      <Section id="profil" scene={1} label="Profil" className="bg-[#f7f1df]">
+        <Container>
           <SectionHeader
-            badge="Nilai Pendidikan"
-            title="Lingkungan pesantren membentuk kehidupan santri"
-            desc="Pendidikan di Al-Furqon tidak hanya mengajarkan ilmu, tetapi membentuk ibadah, adab, disiplin, dan kemandirian."
+            badge="Profil Pesantren"
+            title="Pendahuluan, Landasan, Visi & Misi"
+            desc="Mengenal Pondok Pesantren Al Qur'an Al Furqon lebih dekat."
           />
 
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Pendahuluan */}
+          <div className="mt-10 rounded-[2rem] bg-white p-8 shadow-xl">
+            <h3 className="text-3xl font-black text-emerald-950 mb-4">
+              Pendahuluan
+            </h3>
+
+            <p className="leading-relaxed text-slate-700">
+              {homeData.profil?.pendahuluan}
+            </p>
+          </div>
+
+          <div className="mt-6 rounded-[2rem] bg-white p-8 shadow-xl">
+            <h3 className="text-3xl font-black text-emerald-950 mb-4">
+              Landasan
+            </h3>
+
+            <p className="leading-relaxed text-slate-700 whitespace-pre-line">
+              {homeData.profil?.landasan}
+            </p>
+          </div>
+
+          <div className="mt-6 grid gap-6 lg:grid-cols-2">
+            <div className="rounded-[2rem] bg-white p-8 shadow-xl">
+              <h3 className="text-3xl font-black text-emerald-950 mb-4">
+                Visi
+              </h3>
+
+              <p className="text-slate-700">{homeData.profil?.visi}</p>
+            </div>
+
+            <div className="rounded-[2rem] bg-white p-8 shadow-xl">
+              <h3 className="text-3xl font-black text-emerald-950 mb-4">
+                Misi
+              </h3>
+
+              <ul className="space-y-3 text-slate-700">
+                {homeData.profil?.misi?.map((item, index) => (
+                  <li key={index}>
+                    {index + 1}. {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </Container>
+      </Section>
+
+      {/* INFO PENDAFTARAN */}
+      <Section id="info" scene={1.5} label="Info" className="bg-white">
+        <Container>
+          <SectionHeader
+            badge="Informasi Pendaftaran"
+            title="Biaya & Syarat Pendaftaran"
+            desc="Persiapkan dokumen dan pahami rincian biaya pendaftaran sebelum bergabung dengan kami."
+          />
+
+          <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-2">
+            {/* BIAYA */}
+            <Reveal type="left">
+              <div className="rounded-[2rem] border border-emerald-100 bg-emerald-50/50 p-8 shadow-xl">
+                <div className="mb-6 flex items-center gap-4">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400 text-2xl text-emerald-950">
+                    <FaCheckCircle />
+                  </div>
+                  <h3 className="text-2xl font-black text-emerald-950">
+                    Rincian Biaya
+                  </h3>
+                </div>
+                <ul className="space-y-4">
+                  <li className="flex justify-between border-b border-emerald-200/50 pb-2">
+                    <span className="font-semibold text-slate-700">
+                      Pendaftaran (Formulir)
+                    </span>
+                    <span className="font-black text-emerald-900">
+                      Rp 250.000
+                    </span>
+                  </li>
+                  <li className="flex justify-between border-b border-emerald-200/50 pb-2">
+                    <span className="font-semibold text-slate-700">
+                      Biaya Masuk (MTs)
+                    </span>
+                    <span className="font-black text-emerald-900">
+                      Rp 5.200.000
+                    </span>
+                  </li>
+                  <li className="flex justify-between border-b border-emerald-200/50 pb-2">
+                    <span className="font-semibold text-slate-700">
+                      Biaya Masuk (SMK)
+                    </span>
+                    <span className="font-black text-emerald-900">
+                      Rp 6.000.000
+                    </span>
+                  </li>
+                  <li className="flex justify-between border-b border-emerald-200/50 pb-2">
+                    <span className="font-semibold text-slate-700">
+                      Biaya Masuk (Takhossus)
+                    </span>
+                    <span className="font-black text-emerald-900">
+                      Rp 4.350.000
+                    </span>
+                  </li>
+                  <li className="mt-4 flex flex-col pt-2 gap-2">
+                    <span className="text-lg font-black text-slate-800">
+                      Iuran Bulanan Santri
+                    </span>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-slate-700">MTs</span>
+                      <span className="font-black text-yellow-600">Rp 650.000</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-slate-700">SMK</span>
+                      <span className="font-black text-yellow-600">Rp 750.000</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-slate-700">Takhossus</span>
+                      <span className="font-black text-yellow-600">Rp 600.000</span>
+                    </div>
+                  </li>
+                </ul>
+                <p className="mt-4 text-xs italic text-slate-500">
+                  *Biaya masuk sudah termasuk: 1 stell Seragam Pesantren, 1 stell Seragam Khas Pondok/Kotak-kotak, 1 stell Seragam Sekolah (Putih-Biru/Putih Abu), 1 stell Kaos Olahraga, Al Qur'an dan Kitab-kitab, 1 set Kasur dan Bantal.
+                </p>
+              </div>
+            </Reveal>
+
+            {/* SYARAT */}
+            <Reveal type="right">
+              <div className="h-full rounded-[2rem] border border-emerald-100 bg-emerald-50/50 p-8 shadow-xl">
+                <div className="mb-6 flex items-center gap-4">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400 text-2xl text-emerald-950">
+                    <FaBookOpen />
+                  </div>
+                  <h3 className="text-2xl font-black text-emerald-950">
+                    Syarat Dokumen
+                  </h3>
+                </div>
+                <ul className="space-y-3">
+                  {[
+                    "Membayar uang Pendaftaran/ Formulir",
+                    "Mengisi Formulir Pendaftaran",
+                    "Mengisi Surat Pernyataan Pesantren",
+                    "3 Lembar fotokopi Ijazah telah dilegalisir",
+                    "3 Lembar fotokopi Surat Keterangan Lulus",
+                    "3 Lembar fotokopi NISN",
+                    "3 Lembar fotokopi Akte Kelahiran",
+                    "3 Lembar fotokopi KTP Orang tua",
+                    "3 Lembar fotokopi Kartu Keluarga",
+                    "3 Lembar foto 3x4 background biru (SMK)",
+                    "Fotokopi Surat Kelakuan Baik dari Sekolah",
+                    "Bagi yatim menyertakan Surat Keterangan Kematian",
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <FaCheckCircle className="mt-1 shrink-0 text-emerald-600" />
+                      <span className="text-sm font-medium text-slate-700">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </Reveal>
+          </div>
+        </Container>
+      </Section>
+
+      {/* VALUES */}
+      <Section
+        id="values"
+        scene={2}
+        label="Nilai"
+        className="bg-gradient-to-br from-[#f7f1df] via-white to-emerald-50"
+      >
+        <IslamicBackground />
+        <Container
+          style={valuesScene}
+          className="flex min-h-[100svh] flex-col justify-start"
+        >
+          <div className="mx-auto max-w-4xl pt-24 sm:pt-32">
+            <SectionHeader
+              badge="Nilai Pendidikan"
+              title="Lingkungan pesantren membentuk kehidupan santri"
+              desc="Pendidikan di Al-Furqon tidak hanya mengajarkan ilmu, tetapi membentuk ibadah, adab, disiplin, dan kemandirian."
+            />
+          </div>
+
+          <div className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {homeData.values.map((item, index) => (
               <Reveal key={item.title} delay={index * 0.08}>
                 <TiltCard>
@@ -1222,261 +1347,146 @@ const ctaScene = {
       <Section id="program" scene={4} label="Program" className="bg-[#f7f1df]">
         <IslamicBackground />
 
-<Container
-  style={programScene}
-  className="flex min-h-[100svh] flex-col justify-center"
->
+        <Container
+          style={programScene}
+          className="flex min-h-[100svh] flex-col justify-center"
+        >
           <div className="mt-16 sm:mt-20">
-          <SectionHeader
-            badge="Program Pembinaan"
-            title="Program santri yang aktif dan bermakna"
-            desc="Kegiatan pesantren menjadi bagian penting dari pembentukan karakter, keberanian, dan kemandirian santri."
-          />
+            <SectionHeader
+              badge="Program Pembinaan"
+              title="Program santri yang aktif dan bermakna"
+              desc="Kegiatan pesantren menjadi bagian penting dari pembentukan karakter, keberanian, dan kemandirian santri."
+            />
 
-          <div className="mt-10 grid gap-5 lg:grid-cols-3">
-            {homeData.programs.map((item, index) => (
-              <Reveal key={item.title} delay={index * 0.08}>
-                <TiltCard>
-                  <div className="group overflow-hidden rounded-[2rem] border border-emerald-100 bg-white shadow-2xl">
-                    <div className="relative flex h-[280px] items-center justify-center bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-950">
-                      <motion.div
-                        animate={{
-                          y: [0, -10, 0],
-                          rotate: [0, 5, 0],
-                        }}
-                        transition={{
-                          duration: 4,
-                          repeat: Infinity,
-                          ease: "easeInOut",
-                        }}
-                        className="text-[90px] text-yellow-400"
-                      >
-                        {getIcon(item.iconKey)}
-                      </motion.div>
+            <div className="mt-10 grid grid-cols-3 gap-3 lg:grid-cols-3">
+              {homeData.programs.map((item, index) => (
+                <Reveal key={item.title} delay={index * 0.08}>
+                  <TiltCard>
+                    <div className="group overflow-hidden rounded-[2rem] border border-emerald-100 bg-white shadow-2xl">
+                      <div className="relative flex h-[140px] sm:h-[220px] lg:h-[280px] items-center justify-center bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-950">
+                        <motion.div
+                          animate={{
+                            y: [0, -10, 0],
+                            rotate: [0, 5, 0],
+                          }}
+                          transition={{
+                            duration: 4,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                          }}
+                          className="text-[40px] sm:text-[70px] lg:text-[90px] text-yellow-400"
+                        >
+                          {getIcon(item.iconKey)}
+                        </motion.div>
 
-                      <div className="absolute bottom-5 left-5 right-5">
-                        <p className="text-xs font-black uppercase tracking-[0.28em] text-yellow-300">
-                          {item.tag}
+                        <div className="absolute bottom-5 left-5 right-5">
+                          <p className="text-xs font-black uppercase tracking-[0.28em] text-yellow-300">
+                            {item.tag}
+                          </p>
+
+                          <h3 className="mt-1 text-xs sm:text-xl lg:text-3xl font-black text-white">
+                            {item.title}
+                          </h3>
+                        </div>
+                      </div>
+
+                      <div className="hidden sm:block p-6">
+                        <p className="text-sm leading-relaxed text-slate-600 sm:text-base">
+                          {item.desc}
                         </p>
-
-                        <h3 className="mt-2 text-3xl font-black text-white">
-                          {item.title}
-                        </h3>
                       </div>
                     </div>
-
-                    <div className="p-6">
-                      <p className="text-sm leading-relaxed text-slate-600 sm:text-base">
-                        {item.desc}
-                      </p>
-                    </div>
-                  </div>
-                </TiltCard>
-              </Reveal>
-            ))}
-          </div>
+                  </TiltCard>
+                </Reveal>
+              ))}
+            </div>
           </div>
         </Container>
       </Section>
 
       {/* PEMBINA */}
-<Section id="pembina" dark scene={5} label="Pembina">
-  <IslamicBackground dark intense />
+      <Section id="pembina" dark scene={5} label="Pembina">
+        <IslamicBackground dark intense />
 
-<ResponsiveMotionContainer
-  desktopStyle={pembinaScene}
-  className="flex min-h-[100svh] items-center"
->
-    <div className="w-full max-w-full overflow-hidden">
-      {/* HEADER */}
-      <Reveal>
-        <div className="mx-auto max-w-5xl text-center">
-          <Badge light>Pembina Pesantren</Badge>
+        <ResponsiveMotionContainer
+          desktopStyle={pembinaScene}
+          className="flex min-h-[100svh] items-center"
+        >
+          <div className="w-full max-w-full overflow-hidden">
+            {/* HEADER */}
+            <Reveal>
+              <div className="mx-auto max-w-5xl text-center">
+                <Badge light>Pembina Pesantren</Badge>
 
-          <h2 className="mt-5 text-[clamp(2rem,7vw,4.5rem)] font-black leading-[0.95] tracking-[-0.06em] text-white">
-            Santri tumbuh bersama
-            <span className="block text-yellow-300">
-              pembina yang mendampingi.
-            </span>
-          </h2>
+                <h2 className="mt-5 text-[clamp(2rem,7vw,4.5rem)] font-black leading-[0.95] tracking-[-0.06em] text-white">
+                  Santri tumbuh bersama
+                  <span className="block text-yellow-300">
+                    pembina yang mendampingi.
+                  </span>
+                </h2>
 
-          <p className="mx-auto mt-5 max-w-3xl text-sm leading-relaxed text-emerald-100 sm:text-base lg:text-lg">
-            Pembina pesantren mendampingi adab, disiplin, ibadah, kebersihan,
-            dan kehidupan santri sehari-hari agar tumbuh lebih mandiri.
-          </p>
-        </div>
-      </Reveal>
-
-      {/* CONTENT */}
-      <div className="mt-8 grid w-full max-w-full grid-cols-1 gap-5 overflow-hidden lg:mt-10 xl:grid-cols-[0.85fr_1.15fr] xl:items-stretch">
-        {/* FOTO PEMBINA */}
-        <Reveal type="left">
-          <div className="relative overflow-hidden rounded-[1.8rem] border border-white/10 bg-white/10 p-3 shadow-2xl backdrop-blur-xl sm:rounded-[2rem]">
-            <div className="absolute -right-20 -top-20 h-60 w-60 rounded-full bg-yellow-300/10 blur-3xl" />
-            <div className="absolute -bottom-20 -left-20 h-60 w-60 rounded-full bg-emerald-300/10 blur-3xl" />
-
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activePembina}
-                initial={{ opacity: 0, scale: 0.96, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.96, y: -20 }}
-                transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                className="relative overflow-hidden rounded-[1.4rem]"
-              >
-                <div className="relative h-[360px] overflow-hidden sm:h-[460px] xl:h-[620px]">
-                  <SafeImage
-                    src={currentPembina.image}
-                    alt={currentPembina.name}
-                    className="h-full w-full object-cover"
-                  />
-
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/25 to-transparent" />
-
-                  <div className="absolute left-4 top-4 rounded-full bg-yellow-400 px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-emerald-950">
-                    {currentPembina.badge}
-                  </div>
-
-                  <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-7">
-                    <p className="text-xs font-black uppercase tracking-[0.25em] text-yellow-300">
-                      {currentPembina.role}
-                    </p>
-
-                    <h3 className="mt-2 line-clamp-2 text-2xl font-black leading-tight text-white sm:text-4xl">
-                      {currentPembina.name}
-                    </h3>
-
-                    <p className="mt-3 line-clamp-3 max-w-xl text-sm leading-relaxed text-emerald-100">
-                      {currentPembina.focus}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </Reveal>
-
-        {/* INFORMASI PEMBINA */}
-        <Reveal type="right">
-          <div className="flex h-full min-w-0 max-w-full flex-col overflow-hidden rounded-[1.8rem] border border-white/10 bg-white/10 p-4 shadow-2xl backdrop-blur-xl sm:rounded-[2rem] sm:p-5 lg:p-6">
-            <div className="relative overflow-hidden rounded-[1.5rem] border border-white/10 bg-gradient-to-br from-white/15 via-white/10 to-yellow-300/10 p-5 sm:p-6 lg:p-7">
-              <div className="absolute -right-20 -top-20 h-56 w-56 rounded-full bg-yellow-300/10 blur-3xl" />
-
-              <div className="relative z-10">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400 text-2xl text-emerald-950 shadow-lg">
-                  {getIcon(currentPembina.iconKey)}
-                </div>
-
-                <p className="mt-5 text-xs font-black uppercase tracking-[0.24em] text-yellow-300 sm:tracking-[0.28em]">
-                  Fokus Pembinaan
-                </p>
-
-                <h3 className="mt-3 max-w-full break-words text-[clamp(1.35rem,5.5vw,3.2rem)] font-black leading-[1.05] tracking-[-0.04em] text-white">
-  Membina santri dengan ilmu, adab, dan keteladanan.
-</h3>
-
-                <p className="mt-5 line-clamp-4 text-sm leading-relaxed text-emerald-100 sm:text-base">
-                  {currentPembina.focus}
+                <p className="mx-auto mt-5 max-w-3xl text-sm leading-relaxed text-emerald-100 sm:text-base lg:text-lg">
+                  Pembina pesantren mendampingi adab, disiplin, ibadah,
+                  kebersihan, dan kehidupan santri sehari-hari agar tumbuh lebih
+                  mandiri.
                 </p>
               </div>
-            </div>
+            </Reveal>
 
-            {/* LIST DESKTOP / TABLET */}
-            <div className="mt-5 hidden gap-3 md:grid">
+            {/* CONTENT */}
+            <div className="mt-12 grid w-full grid-cols-1 gap-8 md:grid-cols-2 lg:gap-12">
               {homeData.pembina.map((item, index) => (
-                <motion.button
+                <Reveal
                   key={item.name}
-                  onClick={() => setActivePembina(index)}
-                  whileTap={{ scale: 0.97 }}
-                  whileHover={{ x: 6 }}
-                  className={`group flex min-w-0 items-center gap-4 rounded-2xl border p-4 text-left transition ${
-                    activePembina === index
-                      ? "border-yellow-300 bg-yellow-400 text-emerald-950 shadow-lg shadow-yellow-950/20"
-                      : "border-white/10 bg-white/10 text-white hover:border-yellow-300/40 hover:bg-white/15"
-                  }`}
+                  type={index === 0 ? "left" : "right"}
+                  delay={index * 0.2}
                 >
-                  <div
-                    className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-lg transition ${
-                      activePembina === index
-                        ? "bg-emerald-950 text-yellow-300"
-                        : "bg-white/10 text-yellow-300 group-hover:bg-yellow-300 group-hover:text-emerald-950"
-                    }`}
-                  >
-                    {getIcon(item.iconKey)}
-                  </div>
+                  <div className="group relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 p-4 shadow-2xl backdrop-blur-xl transition hover:bg-white/10 sm:p-6">
+                    <div className="absolute -right-20 -top-20 h-60 w-60 rounded-full bg-yellow-300/10 blur-3xl transition duration-500 group-hover:scale-125" />
+                    <div className="absolute -bottom-20 -left-20 h-60 w-60 rounded-full bg-emerald-300/10 blur-3xl transition duration-500 group-hover:scale-125" />
 
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate font-black">{item.name}</p>
+                    <div className="relative overflow-hidden rounded-[1.5rem]">
+                      <div className="relative h-[400px] w-full overflow-hidden sm:h-[500px]">
+                        <SafeImage
+                          src={item.image}
+                          alt={item.name}
+                          className="h-full w-full object-cover object-top transition duration-700 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
 
-                    <p
-                      className={`mt-1 truncate text-xs font-semibold ${
-                        activePembina === index
-                          ? "text-emerald-900"
-                          : "text-emerald-100/75"
-                      }`}
-                    >
-                      {item.role}
-                    </p>
-                  </div>
-                </motion.button>
-              ))}
-            </div>
-
-            {/* LIST MOBILE */}
-<div className="no-scrollbar mt-5 flex w-full max-w-full gap-3 overflow-x-auto overscroll-x-contain pb-2 md:hidden">              {homeData.pembina.map((item, index) => (
-                <motion.button
-                  key={item.name}
-                  onClick={() => setActivePembina(index)}
-                  whileTap={{ scale: 0.95 }}
-className={`w-[190px] min-w-[190px] rounded-2xl border p-3 text-left transition sm:w-[220px] sm:min-w-[220px] sm:p-4 ${                    activePembina === index
-                      ? "border-yellow-300 bg-yellow-400 text-emerald-950"
-                      : "border-white/10 bg-white/10 text-white"
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${
-                        activePembina === index
-                          ? "bg-emerald-950 text-yellow-300"
-                          : "bg-white/10 text-yellow-300"
-                      }`}
-                    >
-                      {getIcon(item.iconKey)}
+                        <div className="absolute left-4 top-4 rounded-full bg-yellow-400 px-4 py-2 text-[10px] font-black uppercase tracking-[0.22em] text-emerald-950">
+                          {item.badge}
+                        </div>
+                      </div>
                     </div>
 
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-black">
-                        {item.name}
-                      </p>
-
-                      <p
-                        className={`mt-1 truncate text-xs ${
-                          activePembina === index
-                            ? "text-emerald-900"
-                            : "text-emerald-100/75"
-                        }`}
-                      >
+                    <div className="relative z-10 mt-6 text-center">
+                      <p className="text-xs font-black uppercase tracking-[0.25em] text-yellow-300">
                         {item.role}
                       </p>
+                      <h3 className="mt-3 text-2xl font-black leading-tight text-white sm:text-3xl">
+                        {item.name}
+                      </h3>
+                      <p className="mt-4 mx-auto max-w-md text-sm leading-relaxed text-emerald-100/80">
+                        {item.focus}
+                      </p>
                     </div>
                   </div>
-                </motion.button>
+                </Reveal>
               ))}
             </div>
           </div>
-        </Reveal>
-      </div>
-    </div>
-  </ResponsiveMotionContainer>
-</Section>
+        </ResponsiveMotionContainer>
+      </Section>
 
       {/* CTA */}
       <Section id="cta" scene={6} label="Daftar" className="bg-[#f7f1df]">
         <IslamicBackground />
 
         <Container
-  style={ctaScene}
-  className="flex min-h-[100svh] items-center justify-center text-center">
+          style={ctaScene}
+          className="flex min-h-[100svh] items-center justify-center text-center"
+        >
           <Reveal type="zoom">
             <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[2.5rem] bg-emerald-950 p-8 text-white shadow-2xl md:p-14">
               <div className="absolute inset-0 bg-[url('/pattern.png')] opacity-[0.07]" />
@@ -1530,76 +1540,76 @@ className={`w-[190px] min-w-[190px] rounded-2xl border p-3 text-left transition 
 
       <Footer />
 
-<style jsx global>{`
-  html {
-    scroll-behavior: smooth;
-  }
+      <style jsx global>{`
+        html {
+          scroll-behavior: smooth;
+        }
 
-  html,
-body {
-  max-width: 100%;
-  overflow-x: hidden;
-}
+        html,
+        body {
+          max-width: 100%;
+          overflow-x: hidden;
+        }
 
-  ::selection {
-    background: #facc15;
-    color: #064e3b;
-  }
+        ::selection {
+          background: #facc15;
+          color: #064e3b;
+        }
 
-  body {
-    cursor: default;
-    background: #041b15;
-  }
+        body {
+          cursor: default;
+          background: #041b15;
+        }
 
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
+        .line-clamp-2 {
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
 
-  .no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
 
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
+        .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
 
-  @media (prefers-reduced-motion: no-preference) {
-    section {
-      scroll-margin-top: 0px;
-    }
+        @media (prefers-reduced-motion: no-preference) {
+          section {
+            scroll-margin-top: 0px;
+          }
 
-    .storytelling-depth {
-      transform-style: preserve-3d;
-      perspective: 1200px;
-    }
+          .storytelling-depth {
+            transform-style: preserve-3d;
+            perspective: 1200px;
+          }
 
-    .soft-cinematic-shadow {
-      box-shadow:
-        0 30px 80px rgba(4, 27, 20, 0.22),
-        0 0 80px rgba(250, 204, 21, 0.08);
-    }
-  }
+          .soft-cinematic-shadow {
+            box-shadow:
+              0 30px 80px rgba(4, 27, 20, 0.22),
+              0 0 80px rgba(250, 204, 21, 0.08);
+          }
+        }
 
-  @media (max-width: 1023px) {
-  #pembina {
-    overflow-x: hidden;
-  }
+        @media (max-width: 1023px) {
+          #pembina {
+            overflow-x: hidden;
+          }
 
-  #pembina * {
-    max-width: 100%;
-  }
-}
+          #pembina * {
+            max-width: 100%;
+          }
+        }
 
-  @media (max-width: 768px) {
-    html {
-      scroll-behavior: auto;
-    }
-  }
-`}</style>
+        @media (max-width: 768px) {
+          html {
+            scroll-behavior: auto;
+          }
+        }
+      `}</style>
     </main>
   );
 }

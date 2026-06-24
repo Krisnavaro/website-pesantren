@@ -171,7 +171,7 @@ export default function AdminPembayaran() {
     }
   };
 
-  const getData = async () => {
+  async function getData() {
     try {
       setLoadingPage(true);
 
@@ -197,7 +197,7 @@ export default function AdminPembayaran() {
     }
   };
 
-  const getSantri = async () => {
+  async function getSantri() {
     try {
       const result = await fetchJson(`${API_URL}/api/admin/pembayaran/santri`, {
         cache: "no-store",
@@ -747,7 +747,7 @@ if (checking) {
                       </p>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3 rounded-3xl border border-[#E7D7A7] bg-white/70 p-2 shadow-sm backdrop-blur-xl sm:w-[420px]">
+                    <div className="grid grid-cols-3 gap-2 rounded-3xl border border-[#E7D7A7] bg-white/70 p-2 shadow-sm backdrop-blur-xl sm:w-[500px]">
                       <button
                         onClick={() => setTab("tagihan")}
                         className={`
@@ -774,6 +774,20 @@ if (checking) {
                         `}
                       >
                         Riwayat
+                      </button>
+
+                      <button
+                        onClick={() => setTab("manual")}
+                        className={`
+                          h-12 rounded-2xl font-black transition text-sm
+                          ${
+                            tab === "manual"
+                              ? "bg-[#064E3B] text-white shadow-lg"
+                              : "text-slate-600 hover:bg-yellow-50"
+                          }
+                        `}
+                      >
+                        Catat Manual
                       </button>
                     </div>
                   </div>
@@ -810,6 +824,18 @@ if (checking) {
                     reject={reject}
                     deleteRejectedPayment={deleteRejectedPayment}
                     setPreviewImage={setPreviewImage}
+                  />
+                )}
+
+                {tab === "manual" && (
+                  <CatatManualForm
+                    santri={santri}
+                    pembayaranData={data}
+                    API_URL={API_URL}
+                    getAdminPayload={getAdminPayload}
+                    getData={getData}
+                    fetchJson={fetchJson}
+                    formatRupiah={formatRupiah}
                   />
                 )}
               </div>
@@ -1063,7 +1089,7 @@ function TagihanForm({
                   className="input"
                 >
                   <option value="">Pilih Jenjang</option>
-                  <option value="SMP">SMP</option>
+                  <option value="MTS">MTS</option>
                   <option value="SMK">SMK</option>
                   <option value="Takhassus">Takhassus</option>
                 </select>
@@ -1658,6 +1684,203 @@ function ServerMaintenanceModal({ message, onRetry, onClose }) {
             </button>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function CatatManualForm({
+  santri,
+  pembayaranData,
+  API_URL,
+  getAdminPayload,
+  getData,
+  fetchJson,
+  formatRupiah,
+}) {
+  const [form, setForm] = useState({
+    santri_id: "",
+    tagihan_id: "",
+    nominal_dibayar: "",
+    metode: "cash",
+  });
+  const [loading, setLoading] = useState(false);
+
+  // Filter tagihan options based on selected santri
+  const tagihanOptions = useMemo(() => {
+    if (!form.santri_id) return [];
+    
+    // Get all pembayaran for this santri
+    const santriPayments = pembayaranData.filter(
+      (p) => p.santri_id === form.santri_id
+    );
+
+    // Group by tagihan_id
+    const grouped = {};
+    santriPayments.forEach((p) => {
+      if (!p.tagihan_id) return;
+      if (!grouped[p.tagihan_id]) {
+        grouped[p.tagihan_id] = {
+          tagihan_id: p.tagihan_id,
+          jenis: p.jenis,
+          totalTagihan: Number(p.nominal || 0), // Base tagihan nominal
+          terbayar: 0,
+        };
+      }
+      
+      // We assume the max nominal across payments for a tagihan might be the full tagihan nominal
+      if (Number(p.nominal) > grouped[p.tagihan_id].totalTagihan) {
+         grouped[p.tagihan_id].totalTagihan = Number(p.nominal);
+      }
+
+      if (p.status === "lunas" || p.status === "paid" || p.status === "aktif") {
+        grouped[p.tagihan_id].terbayar += Number(p.nominal || 0);
+      }
+    });
+
+    // Filter out fully paid tagihan
+    const unpaid = Object.values(grouped).filter(
+      (g) => g.terbayar < g.totalTagihan
+    );
+
+    return unpaid;
+  }, [form.santri_id, pembayaranData]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!form.santri_id || !form.tagihan_id || !form.nominal_dibayar || !form.metode) {
+      alert("Semua kolom harus diisi.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const payload = {
+        ...form,
+        ...getAdminPayload(),
+      };
+
+      await fetchJson(`${API_URL}/api/admin/pembayaran/manual`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      alert("Pembayaran manual berhasil dicatat.");
+      setForm({
+        santri_id: "",
+        tagihan_id: "",
+        nominal_dibayar: "",
+        metode: "cash",
+      });
+      getData();
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const selectedTagihanObj = tagihanOptions.find(t => t.tagihan_id === form.tagihan_id);
+  const maxNominal = selectedTagihanObj ? (selectedTagihanObj.totalTagihan - selectedTagihanObj.terbayar) : 0;
+
+  return (
+    <div className="p-4 sm:p-6">
+      <div className="mx-auto max-w-3xl rounded-[32px] border border-[#E7D7A7] bg-white p-6 shadow-xl">
+        <div className="mb-6 flex items-center gap-4">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#064E3B] text-white shadow-md">
+            <FaWallet className="text-xl" />
+          </div>
+          <div>
+            <h3 className="text-xl font-black text-[#1F1607]">Catat Pembayaran Manual</h3>
+            <p className="text-sm font-semibold text-slate-500">Rekam pembayaran secara langsung (misal: Tunai)</p>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="mb-2 block text-sm font-bold text-slate-700">Pilih Santri</label>
+            <select
+              className="input bg-white"
+              value={form.santri_id}
+              onChange={(e) => {
+                setForm({ ...form, santri_id: e.target.value, tagihan_id: "", nominal_dibayar: "" });
+              }}
+              required
+            >
+              <option value="">-- Pilih Santri --</option>
+              {santri.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.nama} - {s.jenjang} {s.kelas}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-bold text-slate-700">Pilih Tagihan</label>
+            <select
+              className="input bg-white"
+              value={form.tagihan_id}
+              onChange={(e) => {
+                const tagihanId = e.target.value;
+                const tagihanObj = tagihanOptions.find(t => t.tagihan_id === tagihanId);
+                const max = tagihanObj ? (tagihanObj.totalTagihan - tagihanObj.terbayar) : "";
+                setForm({ ...form, tagihan_id: tagihanId, nominal_dibayar: max });
+              }}
+              disabled={!form.santri_id}
+              required
+            >
+              <option value="">-- Pilih Tagihan Belum Lunas --</option>
+              {tagihanOptions.map((t) => (
+                <option key={t.tagihan_id} value={t.tagihan_id}>
+                  {t.jenis} - Sisa: {formatRupiah(t.totalTagihan - t.terbayar)}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-bold text-slate-700">Nominal Dibayar (Sisa: {formatRupiah(maxNominal)})</label>
+            <input
+              type="number"
+              className="input bg-white"
+              placeholder="Masukkan nominal"
+              value={form.nominal_dibayar}
+              onChange={(e) => setForm({ ...form, nominal_dibayar: e.target.value })}
+              max={maxNominal || ""}
+              required
+              disabled={!form.tagihan_id}
+            />
+            <p className="mt-1 text-xs text-slate-500">Anda dapat mengubah nominal ini jika santri ingin mencicil sebagian.</p>
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-bold text-slate-700">Metode Pembayaran</label>
+            <select
+              className="input bg-white"
+              value={form.metode}
+              onChange={(e) => setForm({ ...form, metode: e.target.value })}
+              required
+            >
+              <option value="cash">Tunai (Cash)</option>
+              <option value="transfer">Transfer Bank</option>
+              <option value="qris">QRIS</option>
+              <option value="va">Virtual Account</option>
+              <option value="ewallet">E-Wallet</option>
+            </select>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading || !form.tagihan_id}
+            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-yellow-400 py-3 font-black text-green-950 shadow-md transition hover:-translate-y-0.5 hover:bg-yellow-300 disabled:opacity-50"
+          >
+            {loading ? "Menyimpan..." : "Simpan Pembayaran"}
+          </button>
+        </form>
       </div>
     </div>
   );

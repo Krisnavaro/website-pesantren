@@ -73,7 +73,7 @@ export default function AdminDashboard() {
     fetchDashboard();
   }, []);
 
-  const fetchDashboard = async () => {
+  async function fetchDashboard() {
     try {
       setLoading(true);
       setErrorMessage("");

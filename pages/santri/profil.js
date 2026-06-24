@@ -95,7 +95,7 @@ export default function ProfilSantri() {
     }, 3500);
   };
 
-  const fetchProfil = async () => {
+  async function fetchProfil() {
   try {
     setLoading(true);
 
@@ -705,7 +705,7 @@ if (checking) {
   value={form.jenjang}
   onChange={(v) => handleChange("jenjang", v)}
   disabled={true}
-  options={["SMP", "SMK", "Takhassus"]}
+  options={["MTS", "SMK", "Takhassus"]}
 />
 <Input
   label={form.jenjang === "Takhassus" ? "Marhalah" : "Kelas"}
