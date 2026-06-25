@@ -132,7 +132,7 @@ const theme = {
       ? tagihanPending
       : tagihanLunas;
 
-  const totalNominal = data.reduce(
+  const totalNominal = tagihanBelumBayar.reduce(
     (sum, item) => sum + Number(item.nominal || 0),
     0
   );

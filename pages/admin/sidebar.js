@@ -145,8 +145,7 @@ export default function SidebarAdmin({
           border-r border-white/10 bg-[#031A13] text-white shadow-2xl shadow-black/30
           transition-all duration-300
 
-          ${collapsed ? "md:w-[92px]" : "md:w-[270px]"}
-          w-[285px]
+          ${collapsed ? "w-[92px]" : "w-[285px] md:w-[270px]"}
 
           ${open ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         `}

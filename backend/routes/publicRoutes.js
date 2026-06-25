@@ -51,7 +51,7 @@ const homeData = {
   heroStats: [
     { value: "100+", label: "Santri" },
     { value: "6", label: "Program" },
-    { value: "3+", label: "Jenjang" },
+    { value: "3", label: "Jenjang" },
   ],
 
   programs: [
